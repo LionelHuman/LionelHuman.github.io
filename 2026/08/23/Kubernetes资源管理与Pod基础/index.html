@@ -1,0 +1,894 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Kubernetes资源管理与Pod基础 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="【了解】Node 节点管理Node是K8s集群的工作节点（包括 Master和Worker），管理Node是日常运维的基本功 查看帮助12kubectl --helpkubectl get --help  查看集群信息1kubectl cluster-info  查看节点信息12345678# 查看所有节点kubectl get nodes# 查看节点详细信息（IP、系统、内核版本等）kubect">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes资源管理与Pod基础">
+<meta property="og:url" content="http://example.com/2026/08/23/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="【了解】Node 节点管理Node是K8s集群的工作节点（包括 Master和Worker），管理Node是日常运维的基本功 查看帮助12kubectl --helpkubectl get --help  查看集群信息1kubectl cluster-info  查看节点信息12345678# 查看所有节点kubectl get nodes# 查看节点详细信息（IP、系统、内核版本等）kubect">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-08-23T03:12:52.000Z">
+<meta property="article:modified_time" content="2026-08-31T12:56:41.034Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Kubernetes资源管理与Pod基础",
+  "url": "http://example.com/2026/08/23/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E5%9F%BA%E7%A1%80/",
+  "image": "http://example.com/img/butterfly-icon.png",
+  "datePublished": "2026-08-23T03:12:52.000Z",
+  "dateModified": "2026-08-31T12:56:41.034Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "John Doe",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/08/23/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E5%9F%BA%E7%A1%80/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Kubernetes资源管理与Pod基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">Kubernetes资源管理与Pod基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Kubernetes资源管理与Pod基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-08-23T03:12:52.000Z" title="Created 2026-08-23 11:12:52">2026-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-08-31T12:56:41.034Z" title="Updated 2026-08-31 20:56:41">2026-08-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="【了解】Node-节点管理"><a href="#【了解】Node-节点管理" class="headerlink" title="【了解】Node 节点管理"></a>【了解】Node 节点管理</h2><p>Node是K8s集群的工作节点（包括 Master和Worker），管理Node是日常运维的基本功</p>
+<h3 id="查看帮助"><a href="#查看帮助" class="headerlink" title="查看帮助"></a>查看帮助</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl --<span class="built_in">help</span></span><br><span class="line">kubectl get --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查看集群信息"><a href="#查看集群信息" class="headerlink" title="查看集群信息"></a>查看集群信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl cluster-info</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看节点信息"><a href="#查看节点信息" class="headerlink" title="查看节点信息"></a>查看节点信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有节点</span></span><br><span class="line">kubectl get nodes</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看节点详细信息（IP、系统、内核版本等）</span></span><br><span class="line">kubectl get nodes -o wide</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看某个节点的详细状态（常用于排错）</span></span><br><span class="line">kubectl describe node &lt;node-name&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="让-Node-节点也能执行-kubectl-命令"><a href="#让-Node-节点也能执行-kubectl-命令" class="headerlink" title="让 Node 节点也能执行 kubectl 命令"></a>让 Node 节点也能执行 kubectl 命令</h4><p>默认情况下，只有 Master 节点配置了管理员凭证。如果希望在 Node 节点上也使用 <code>kubectl</code>，可以将 Master 上的 <code>admin.conf</code> 拷贝过去：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 Node 节点创建 .kube 目录</span></span><br><span class="line"><span class="built_in">mkdir</span> /root/.kube</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 Master 上执行拷贝</span></span><br><span class="line">scp /etc/kubernetes/admin.conf node1:/root/.kube/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 node1 上验证</span></span><br><span class="line">kubectl get nodes</span><br></pre></td></tr></table></figure>
+
+<h4 id="节点标签（Label）"><a href="#节点标签（Label）" class="headerlink" title="节点标签（Label）"></a>节点标签（Label）</h4><p>k8s集群如果由大量节点组成，可将节点打上对应的标签，然后通过标签进行筛选，查看</p>
+<p>Label是键值对，可以附加到任何资源上，用于标识和筛选。标签名称只能以数字或字母做开头或结尾</p>
+<p>如 <code>coun-try</code> 合法，<code>country-</code> 非法</p>
+<h5 id="设置节点标签信息"><a href="#设置节点标签信息" class="headerlink" title="设置节点标签信息"></a>设置节点标签信息</h5><p>为节点master打一个region&#x3D;huanan 的标签</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给节点打标签</span></span><br><span class="line">kubectl label node master region=huanan</span><br></pre></td></tr></table></figure>
+
+<h5 id="查看节点标签信息"><a href="#查看节点标签信息" class="headerlink" title="查看节点标签信息"></a>查看节点标签信息</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看节点标签</span></span><br><span class="line">kubectl get nodes --show-labels</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看带有指定标签列（-L）的节点</span></span><br><span class="line"><span class="comment"># 查看所有节点带region的标签</span></span><br><span class="line">kubectl get nodes -L region</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 同时查看多个标签列</span></span><br><span class="line">kubectl get nodes -L region,locate</span><br></pre></td></tr></table></figure>
+
+<h5 id="修改标签信息"><a href="#修改标签信息" class="headerlink" title="修改标签信息"></a>修改标签信息</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改已有标签（需 --overwrite）</span></span><br><span class="line">kubectl label node master region=huadong --overwrite</span><br></pre></td></tr></table></figure>
+
+<h5 id="删除标签信息"><a href="#删除标签信息" class="headerlink" title="删除标签信息"></a>删除标签信息</h5><p>使用key加一个减号的写法来取消标签</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除标签（在 key 后加 -）</span></span><br><span class="line">kubectl label node master region-</span><br></pre></td></tr></table></figure>
+
+<h4 id="标签选择器"><a href="#标签选择器" class="headerlink" title="标签选择器"></a>标签选择器</h4><p>标签选择器主要有两类：</p>
+<ul>
+<li><strong>等值关系</strong>：<code>=</code>、<code>!=</code></li>
+<li><strong>集合关系</strong>：<code>KEY in {VALUE1, VALUE2, ...}</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先打标签</span></span><br><span class="line">kubectl label node node1 bussiness=game</span><br><span class="line">kubectl label node node2 bussiness=ad</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等值查询</span></span><br><span class="line">kubectl get nodes -l region=huanan</span><br><span class="line">kubectl get nodes -l region!=huanan</span><br><span class="line"></span><br><span class="line"><span class="comment"># 集合查询（in）</span></span><br><span class="line">kubectl get node -l <span class="string">&quot;bussiness in (game,ad)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询 master 节点</span></span><br><span class="line">kubectl get node -l kubernetes.io/role=master</span><br></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>K8s 集群中，Node 是一种资源（后面还会学习 Namespace、Pod、Deployment、Service 等）</li>
+<li>很多资源类型都可以打标签，标签是为了更好地进行资源对象的选择与匹配</li>
+<li><code>-l</code> 用于标签选择（筛选），<code>-L</code> 用于显示标签列</li>
+</ul>
+<h2 id="【掌握】资源管理介绍"><a href="#【掌握】资源管理介绍" class="headerlink" title="【掌握】资源管理介绍"></a>【掌握】资源管理介绍</h2><h3 id="YAML-语言介绍"><a href="#YAML-语言介绍" class="headerlink" title="YAML 语言介绍"></a>YAML 语言介绍</h3><p>YAML 是一个类似 XML、JSON 的标记性语言，强调以<strong>数据</strong>为中心，号称“一种人性化的数据格式语言”。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">lionelhuman</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">age</span>&gt;</span>15<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">address</span>&gt;</span>Beijing<span class="tag">&lt;/<span class="name">address</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">lionelhuman</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">lionelhuman:</span></span><br><span class="line">  <span class="attr">age:</span> <span class="number">15</span></span><br><span class="line">  <span class="attr">address:</span> <span class="string">Beijing</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>YAML 核心规则</strong>：</p>
+<ul>
+<li>大小写敏感</li>
+<li><code>#</code> 表示注释</li>
+<li>使用<strong>空格</strong>缩进（不要用 Tab），缩进空格数不重要，但<strong>相同层级的元素必须左对齐</strong></li>
+<li>书写时 <code>key: value</code> 冒号后必须加一个空格</li>
+<li>多段 YAML 配置放在一个文件中时，中间使用 <code>---</code> 分隔</li>
+</ul>
+<h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><p><strong>标量类型（Scalar Types）</strong>：单个的、不可再分的值</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 布尔类型</span></span><br><span class="line"><span class="attr">c1:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 整型</span></span><br><span class="line"><span class="attr">c2:</span> <span class="number">234</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 浮点型</span></span><br><span class="line"><span class="attr">c3:</span> <span class="number">3.14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># null 类型</span></span><br><span class="line"><span class="attr">c4:</span> <span class="string">~</span>   <span class="comment"># 或 null，或什么都不写</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 日期类型（ISO 8601 格式）</span></span><br><span class="line"><span class="attr">c5:</span> <span class="number">2018-02-17</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 时间类型（ISO 8601 格式）</span></span><br><span class="line"><span class="attr">c6:</span> <span class="number">2018-02-17T15:02:31+08:00</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符串类型</span></span><br><span class="line"><span class="attr">c7:</span> <span class="string">heima</span></span><br><span class="line"><span class="attr">c8:</span> <span class="string">line1</span></span><br><span class="line">    <span class="string">line2</span>   <span class="comment"># 多行字符串，前后空格会被转成一个空格</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>序列类型（Sequence Types）</strong>：一组按次序排列的值，即数组&#x2F;列表</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 推荐写法</span></span><br><span class="line"><span class="attr">address:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">顺义</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">昌平</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">14.5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 简写形式（了解）</span></span><br><span class="line"><span class="attr">address:</span> [<span class="string">顺义</span>, <span class="string">昌平</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>映射类型（Mapping Types）</strong>：键值对的集合，即字典&#x2F;Hash</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 推荐写法</span></span><br><span class="line"><span class="attr">heima:</span></span><br><span class="line">  <span class="attr">age:</span> <span class="number">15</span></span><br><span class="line">  <span class="attr">address:</span> <span class="string">Beijing</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 简写形式（了解）</span></span><br><span class="line"><span class="attr">heima:</span> &#123;<span class="attr">age:</span> <span class="number">15</span>, <span class="attr">address:</span> <span class="string">Beijing</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>三种数据类型可以随意组合嵌套，生成丰富的 YAML 数据形式。可用在线工具 <a target="_blank" rel="noopener" href="https://www.json2yaml.com/convert-yaml-to-json">https://www.json2yaml.com/convert-yaml-to-json</a> 验证 YAML 格式。</p>
+</blockquote>
+<h3 id="资源管理方式"><a href="#资源管理方式" class="headerlink" title="资源管理方式"></a>资源管理方式</h3><p>在Kubernetes中，<strong>所有内容都抽象为资源</strong>，用户通过操作资源来管理K8s</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="容器、Pod、存储的关系"><a href="#容器、Pod、存储的关系" class="headerlink" title="容器、Pod、存储的关系"></a>容器、Pod、存储的关系</h4><ul>
+<li><strong>容器</strong>：K8s 本质上是一个集群系统，部署服务就是在集群中运行一个个容器</li>
+<li><strong>Pod</strong>：K8s 的最小管理单元是 Pod 而不是容器，容器必须放在 Pod 中；K8s一般不直接管理Pod，而是通过Pod控制器（如 Deployment）来管理</li>
+<li><strong>Service</strong>：Pod 提供服务后，通过 Service 实现访问</li>
+<li><strong>存储</strong>：ConfigMap、Secret 等提供配置和数据持久化</li>
+</ul>
+<h4 id="三种资源管理方式"><a href="#三种资源管理方式" class="headerlink" title="三种资源管理方式"></a>三种资源管理方式</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>操作对象</th>
+<th>适用环境</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命令式对象管理</td>
+<td>对象</td>
+<td>测试</td>
+<td>简单</td>
+<td>只能操作活动对象，无法审计、跟踪</td>
+</tr>
+<tr>
+<td>命令式对象配置</td>
+<td>文件</td>
+<td>开发</td>
+<td>可以审计、跟踪</td>
+<td>项目大时配置文件多，操作麻烦</td>
+</tr>
+<tr>
+<td>声明式对象配置</td>
+<td>文件或目录</td>
+<td>开发</td>
+<td>支持目录操作</td>
+<td>意外情况下难以调试</td>
+</tr>
+</tbody></table>
+<p><strong>小结</strong>：</p>
+<ol>
+<li>命令式和声明式是 Kubernetes 常见的两种资源管理方式</li>
+<li>命令式适合测试和调试，由于没有审计和跟踪记录，生产上很少用</li>
+<li>声明式 <code>apply</code> 支持版本管理和操作记录</li>
+</ol>
+<h4 id="命令式对象管理"><a href="#命令式对象管理" class="headerlink" title="命令式对象管理"></a>命令式对象管理</h4><p>集群中的管理操作几乎都可以使用kubectl命令完成</p>
+<p>kubectl是kubernetes集群的命令行工具，通过它能够对集群本身进行管理，并能够在集群上进行容器化应用的安装部署</p>
+<p><code>kubectl</code> 命令语法：<code>kubectl [command] [type] [name] [flags]</code></p>
+<ul>
+<li><code>command</code>：操作类型，如 create、get、delete</li>
+<li><code>type</code>：资源类型，如 pod、service、deployment</li>
+<li><code>name</code>：资源名称（大小写敏感）</li>
+<li><code>flags</code>：额外可选参数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes</span><br></pre></td></tr></table></figure>
+
+<p><strong>常用资源类型</strong>（可通过 <code>kubectl api-resources</code> 查看）：</p>
+<p>kubernetes中所有的内容都抽象为资源，可以通过下面的命令进行查看:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl api-resources</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>资源分类</th>
+<th>资源名称</th>
+<th>缩写</th>
+<th>资源作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>集群级别</td>
+<td>nodes</td>
+<td>no</td>
+<td>集群组成部分</td>
+</tr>
+<tr>
+<td>命名空间</td>
+<td>namespaces</td>
+<td>ns</td>
+<td>隔离 Pod</td>
+</tr>
+<tr>
+<td>Pod 资源</td>
+<td>pods</td>
+<td>po</td>
+<td>装载容器</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td>deployments</td>
+<td>deploy</td>
+<td>控制 Pod 资源</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td>replicasets</td>
+<td>rs</td>
+<td>控制 Pod 资源</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td>daemonsets</td>
+<td>ds</td>
+<td>控制 Pod 资源</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td>statefulsets</td>
+<td>sts</td>
+<td>控制 Pod 资源</td>
+</tr>
+<tr>
+<td>服务发现</td>
+<td>services</td>
+<td>svc</td>
+<td>统一 Pod 对外接口</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>persistentvolumes</td>
+<td>pv</td>
+<td>存储</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>persistentvolumeclaims</td>
+<td>pvc</td>
+<td>存储</td>
+</tr>
+<tr>
+<td>配置</td>
+<td>configmaps</td>
+<td>cm</td>
+<td>配置</td>
+</tr>
+<tr>
+<td>配置</td>
+<td>secrets</td>
+<td>-</td>
+<td>配置</td>
+</tr>
+</tbody></table>
+<p><strong>常用操作命令</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>命令分类</th>
+<th>命令</th>
+<th>翻译</th>
+<th>命令作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基本命令</td>
+<td>create</td>
+<td>创建</td>
+<td>创建一个资源</td>
+</tr>
+<tr>
+<td></td>
+<td>edit</td>
+<td>编辑</td>
+<td>编辑一个资源</td>
+</tr>
+<tr>
+<td></td>
+<td>get</td>
+<td>获取</td>
+<td>获取一个资源</td>
+</tr>
+<tr>
+<td></td>
+<td>patch</td>
+<td>更新</td>
+<td>更新一个资源</td>
+</tr>
+<tr>
+<td></td>
+<td>delete</td>
+<td>删除</td>
+<td>删除一个资源</td>
+</tr>
+<tr>
+<td></td>
+<td>explain</td>
+<td>解释</td>
+<td>展示资源文档</td>
+</tr>
+<tr>
+<td>运行和调试</td>
+<td>run</td>
+<td>运行</td>
+<td>在集群中运行一个指定的镜像</td>
+</tr>
+<tr>
+<td></td>
+<td>expose</td>
+<td>暴露</td>
+<td>暴露资源为 Service</td>
+</tr>
+<tr>
+<td></td>
+<td>describe</td>
+<td>描述</td>
+<td>显示资源内部信息</td>
+</tr>
+<tr>
+<td></td>
+<td>logs</td>
+<td>日志</td>
+<td>输出容器在 Pod 中的日志</td>
+</tr>
+<tr>
+<td></td>
+<td>exec</td>
+<td>执行</td>
+<td>执行容器中的一个命令</td>
+</tr>
+<tr>
+<td></td>
+<td>cp</td>
+<td>复制</td>
+<td>在 Pod 内外复制文件</td>
+</tr>
+<tr>
+<td></td>
+<td>scale</td>
+<td>规模</td>
+<td>扩（缩）容 Pod 的数量</td>
+</tr>
+<tr>
+<td>高级命令</td>
+<td>apply</td>
+<td>应用</td>
+<td>通过文件对资源进行配置</td>
+</tr>
+<tr>
+<td></td>
+<td>label</td>
+<td>标签</td>
+<td>更新资源上的标签</td>
+</tr>
+<tr>
+<td>其他命令</td>
+<td>cluster-info</td>
+<td>集群信息</td>
+<td>显示集群信息</td>
+</tr>
+<tr>
+<td></td>
+<td>version</td>
+<td>版本</td>
+<td>显示 Server 和 Client 的版本</td>
+</tr>
+</tbody></table>
+<p><strong>命令式对象管理示例</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个 namespace</span></span><br><span class="line">kubectl create namespace dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 namespace</span></span><br><span class="line">kubectl get ns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 dev 命名空间下创建并运行一个 nginx Pod</span></span><br><span class="line">kubectl run nginx --image=nginx:1.24.0 -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Pod</span></span><br><span class="line">kubectl get pods -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Pod 详细信息</span></span><br><span class="line">kubectl describe pod nginx -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除 Pod</span></span><br><span class="line">kubectl delete pod nginx -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除 namespace</span></span><br><span class="line">kubectl delete ns dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="命令式对象配置"><a href="#命令式对象配置" class="headerlink" title="命令式对象配置"></a>命令式对象配置</h4><p>命令式对象配置就是使用命令配合配置文件一起来操作kubernetes资源</p>
+<p>命令式对象配置 &#x3D; 命令 + YAML 配置文件</p>
+<p>创建 <code>pod-nginx.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">dev</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx-containers</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.m.daocloud.io/library/nginx:1.24.0</span></span><br><span class="line">    <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br></pre></td></tr></table></figure>
+
+<p>属性说明：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: 指定Kubernetes API的版本号，这里使用的是v1版本</span><br><span class="line">  kind: 指的是你要创建资源的类型，指定资源类型，这里是Pod</span><br><span class="line">  metadata: 元数据，用于描述资源的属性信息</span><br><span class="line">  name: Pod的名称，这里设置为dev-nginx</span><br><span class="line">  spec: Pod的详细配置信息</span><br><span class="line">  replicas：指定副本数</span><br><span class="line">  template：定义pod模板</span><br><span class="line">  metadata：定义pod的元数据</span><br><span class="line">  containers: Pod中包含的容器列表</span><br><span class="line">  image: 容器使用的镜像名称，这里使用的是nginx</span><br><span class="line">  name: 容器的名称，这里也设置为dev-nginx</span><br><span class="line">  protocol:         TCP协议类型 TCP/UDP</span><br><span class="line">  port: 80                集群内的其他容器组可通过 80 端口访问 Service</span><br><span class="line">  nodePort: 32600   通过任意节点的 32600 端口访问 Service</span><br><span class="line">  targetPort: 80        将请求转发到匹配 Pod 的 80 端口</span><br><span class="line">  type: NodePort        Serive的类型，ClusterIP/NodePort/LoaderBalancer</span><br><span class="line">  imagePullPolicy：IfNotPresent  拉取策略</span><br></pre></td></tr></table></figure>
+
+<p>执行操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建资源</span></span><br><span class="line">kubectl create -f pod-nginx.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看资源</span></span><br><span class="line">kubectl get -f pod-nginx.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除资源</span></span><br><span class="line">kubectl delete -f pod-nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<h5 id="总结-1"><a href="#总结-1" class="headerlink" title="总结~~~~~"></a>总结~~~~~</h5><p>命令式对象配置的方式操作资源，可以简单的认为：命令  +  Yaml配置文件（里面是命令需要的各种参数）<br>命令：<br>  create -f 创建<br>  get -f 查看<br>  delete -f 删除</p>
+<h4 id="声明式对象配置（推荐）"><a href="#声明式对象配置（推荐）" class="headerlink" title="声明式对象配置（推荐）"></a>声明式对象配置（推荐）</h4><p>声明式对象配置跟命令式对象配置很相似，但是它只有一个命令apply</p>
+<p>声明式对象配置只用一个命令 <code>apply</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一次执行，创建资源</span></span><br><span class="line">kubectl apply -f pod-nginx.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 再次执行，资源无变动（幂等性）</span></span><br><span class="line">kubectl apply -f pod-nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<p><strong>声明式配置的特点</strong>：</p>
+<ul>
+<li>使用 <code>apply</code> 描述资源最终状态（在 YAML 中定义）</li>
+<li>资源不存在则创建（相当于 <code>create</code>）</li>
+<li>资源已存在则更新（相当于 <code>patch</code>）</li>
+<li><code>apply</code> 会记录历史数据，存放在注解中</li>
+</ul>
+<p><strong>查看和导出资源 YAML</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看 Pod 的 YAML 格式详情</span></span><br><span class="line">kubectl get pod nginx -n dev -o yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导出到文件</span></span><br><span class="line">kubectl get pod nginx -n dev -o yaml &gt; nginx.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在线编辑资源</span></span><br><span class="line">kubectl edit pod nginx -n dev</span><br></pre></td></tr></table></figure>
+
+<h5 id="三种方式使用推荐"><a href="#三种方式使用推荐" class="headerlink" title="三种方式使用推荐"></a>三种方式使用推荐</h5><ul>
+<li><strong>创建&#x2F;更新资源</strong>：使用声明式对象配置 <code>kubectl apply -f XXX.yaml</code></li>
+<li><strong>删除资源</strong>：使用命令式对象配置 <code>kubectl delete -f XXX.yaml</code></li>
+<li><strong>查询资源</strong>：使用命令式对象管理 <code>kubectl get/describe 资源名称</code></li>
+</ul>
+<h5 id="总结-2"><a href="#总结-2" class="headerlink" title="总结~~~"></a>总结~~~</h5><ol>
+<li>YAML 语言以<strong>数据</strong>为中心，没有复杂的标识语言</li>
+<li>YAML 语言<strong>大小写敏感</strong></li>
+<li>YAML 对缩进空格数没有硬性要求，但要求<strong>相同层级左对齐</strong></li>
+<li>常用命令：<code>kubectl get node/pod/namespace/...</code>、<code>kubectl edit pod/deployment -n xxx</code>、<code>kubectl create/apply -f xxx.yaml</code></li>
+<li><code>kubectl get pod -n dev nginx</code> 查看基本信息，<code>kubectl get pod -n dev nginx -o yaml</code> 查看完整 YAML 配置</li>
+</ol>
+<h2 id="【实践】部署-Nginx-服务"><a href="#【实践】部署-Nginx-服务" class="headerlink" title="【实践】部署 Nginx 服务"></a>【实践】部署 Nginx 服务</h2><p>本章节将介绍如何在 Kubernetes 集群中部署一个 Nginx 服务，并能够对其进行访问。</p>
+<h3 id="Namespace（命名空间）"><a href="#Namespace（命名空间）" class="headerlink" title="Namespace（命名空间）"></a>Namespace（命名空间）</h3><p>Namespace 的主要作用是实现<strong>多套环境的资源隔离</strong>或<strong>多租户的资源隔离</strong></p>
+<p>默认情况下，所有Pod可以相互访问，通过Namespace可以隔离</p>
+<p>kubernetes通过将集群内部的资源分配到不同的Namespace中，可以形成逻辑上的”组”，以方便不同的组的资源进行隔离使用和管理</p>
+<p><strong>默认命名空间</strong>：</p>
+<ul>
+<li><code>default</code>：未指定 Namespace 的对象默认在此</li>
+<li><code>kube-node-lease</code>：集群节点心跳维护（v1.13+）</li>
+<li><code>kube-public</code>：可以被所有人访问（包括未认证用户）</li>
+<li><code>kube-system</code>：Kubernetes 系统创建的资源</li>
+</ul>
+<h4 id="Namespace操作"><a href="#Namespace操作" class="headerlink" title="Namespace操作"></a>Namespace操作</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有 ns</span></span><br><span class="line">kubectl get ns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看指定 ns</span></span><br><span class="line">kubectl get ns default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以 YAML 格式查看</span></span><br><span class="line">kubectl get ns default -o yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 ns 详情</span></span><br><span class="line">kubectl describe ns default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 ns（命令式）</span></span><br><span class="line">kubectl create ns dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除 ns（会删除该 ns 下所有资源）</span></span><br><span class="line">kubectl delete ns dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h4><p><code>ns-dev.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">dev</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以执行对应的创建和删除命令了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f ns-dev.yaml</span><br><span class="line">kubectl delete -f ns-dev.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pod（容器）"><a href="#Pod（容器）" class="headerlink" title="Pod（容器）"></a>Pod（容器）</h3><p>Pod是K8s集群进行管理的最小单元，程序必须部署在容器中，而容器必须存在于 Pod 中。一个 Pod 可以包含一个或多个容器</p>
+<p>Pod可以认为是容器的封装，一个Pod中可以存在一个或者多个容器</p>
+<p>kubernetes在集群启动之后，集群中的各个组件也都是以Pod方式运行的，可以通过下面命令查看：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -n kube-system</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建并运行Pod"><a href="#创建并运行Pod" class="headerlink" title="创建并运行Pod"></a>创建并运行Pod</h4><p>kubernetes没有提供单独运行Pod的命令，都是通过Pod控制器来实现的</p>
+<p><code>命令格式： kubectl run (pod控制器名称) [参数]</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 命令格式：kubectl run (pod名称) [参数]</span></span><br><span class="line">kubectl run nginx --image=nginx:1.24.0 --port=80 --namespace dev</span><br></pre></td></tr></table></figure>
+
+<h5 id="注意：直接使用标准镜像名-nginx-1-24-0-即可"><a href="#注意：直接使用标准镜像名-nginx-1-24-0-即可" class="headerlink" title="注意：直接使用标准镜像名 nginx:1.24.0 即可"></a>注意：直接使用标准镜像名 nginx:1.24.0 即可</h5><p>该镜像会通过我们在前面配置的 &#x2F;etc&#x2F;containerd&#x2F;certs.d&#x2F;docker.io&#x2F;hosts.toml 里的阿里云加速器自动拉取</p>
+<p>千万不要乱用网上的第三方代理域名（如 cf-workers-xxx），极容易报错或限流！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run nginx --image=nginx:1.24.0 --port=80 --namespace dev</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--image  指定Pod的镜像</span><br><span class="line">--port   指定端口</span><br><span class="line">--namespace  指定namespace</span><br><span class="line">具体参数，可以查看 kubectl run --help</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看Pod信息"><a href="#查看Pod信息" class="headerlink" title="查看Pod信息"></a>查看Pod信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看Pod基本信息</span></span><br><span class="line">kubectl get pods -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看Pod详细信息（含 IP、节点）</span></span><br><span class="line">kubectl get pods -n dev -o wide</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Pod 的 YAML 详情（排错利器）</span></span><br><span class="line">kubectl describe pod nginx -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看命名空间下所有资源</span></span><br><span class="line">kubectl get all -n dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="访问Pod"><a href="#访问Pod" class="headerlink" title="访问Pod"></a>访问Pod</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取 Pod IP</span></span><br><span class="line">kubectl get pods -n dev -o wide</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在集群内访问 Pod</span></span><br><span class="line">curl http://&lt;Pod-IP&gt;:80</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除Pod"><a href="#删除Pod" class="headerlink" title="删除Pod"></a>删除Pod</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod nginx -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 强制删除</span></span><br><span class="line">kubectl delete pod nginx -n dev --force</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置操作"><a href="#配置操作" class="headerlink" title="配置操作"></a>配置操作</h4><p>创建一个pod-nginx.yaml，内容如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">pod</span></span><br><span class="line">      <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">      <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx-port</span></span><br><span class="line">          <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">          <span class="attr">protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以执行对应的创建和删除命令了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f pod-nginx.yaml</span><br><span class="line">kubectl delete -f pod-nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<h4 id="常见报错"><a href="#常见报错" class="headerlink" title="常见报错"></a>常见报错</h4><table>
+<thead>
+<tr>
+<th>报错现象</th>
+<th>解决办法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>镜像拉取失败</td>
+<td>检查镜像地址是否正确，确保 containerd&#x2F;docker 配置了加速器</td>
+</tr>
+<tr>
+<td>命名空间没有创建</td>
+<td>先执行 <code>kubectl create ns dev</code> 创建命名空间</td>
+</tr>
+<tr>
+<td>名称中包含下划线（如 <code>nginx_run</code>）</td>
+<td>改为中划线 <code>nginx-run</code>，K8s 资源名称不支持下划线</td>
+</tr>
+</tbody></table>
+<h3 id="Label（标签）"><a href="#Label（标签）" class="headerlink" title="Label（标签）"></a>Label（标签）</h3><p>Label是kubernetes系统中的一个重要概念。它的作用就是在资源上添加标识，用来对它们进行区分和选择</p>
+<p>Label 以 key&#x2F;value 键值对形式附加到各种对象上（Node、Pod、Service 等），用于区分和选择</p>
+<p><strong>常用 Label 示例</strong>：</p>
+<ul>
+<li>版本标签：<code>version: release</code>、<code>version: stable</code></li>
+<li>环境标签：<code>environment: dev</code>、<code>environment: test</code>、<code>environment: pro</code></li>
+<li>架构标签：<code>tier: frontend</code>、<code>tier: backend</code></li>
+</ul>
+<h4 id="Label操作"><a href="#Label操作" class="headerlink" title="Label操作"></a>Label操作</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为 Pod 打标签</span></span><br><span class="line">kubectl label pod nginx-pod version=1.0 -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新标签（需 --overwrite）</span></span><br><span class="line">kubectl label pod nginx-pod version=2.0 -n dev --overwrite</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看标签</span></span><br><span class="line">kubectl get pod nginx-pod -n dev --show-labels</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按标签筛选（等值）</span></span><br><span class="line">kubectl get pod -n dev -l version=2.0 --show-labels</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按标签筛选（不等）</span></span><br><span class="line">kubectl get pod -n dev -l version!=2.0 --show-labels</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除标签（key 后加 -）</span></span><br><span class="line">kubectl label pod nginx-pod version- -n dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置Label方式"><a href="#配置Label方式" class="headerlink" title="配置Label方式"></a>配置Label方式</h4><p>在PodYAML中定义标签：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&quot;3.0&quot;</span> </span><br><span class="line">    <span class="attr">env:</span> <span class="string">&quot;test&quot;</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">pod</span></span><br><span class="line">    <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx-port</span></span><br><span class="line">      <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以执行对应的更新命令了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f nginxpod.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="Deployment（部署）"><a href="#Deployment（部署）" class="headerlink" title="Deployment（部署）"></a>Deployment（部署）</h3><p>Pod是最小控制单元，但 K8s 很少直接控制 Pod，而是通过 <strong>Pod 控制器</strong> 来管理</p>
+<p>Deployment 是最常用的控制器，支持滚动更新、回滚、扩缩容</p>
+<p>kubernetes中Pod控制器的种类有很多，本章节只介绍一种：Deployment</p>
+<h4 id="Deployment命令操作"><a href="#Deployment命令操作" class="headerlink" title="Deployment命令操作"></a>Deployment命令操作</h4><p><code>命令格式: kubectl create deployment 名称  [参数]</code></p>
+<p><code>--image  指定pod的镜像 --port   指定端口 --namespace  指定namespace </code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建 Deployment</span></span><br><span class="line">kubectl create deploy deploy-nginx --image=nginx:1.24.0 -n dev</span><br></pre></td></tr></table></figure>
+
+<p>弹性扩容（指定副本数）</p>
+<p><code>命令格式: kubectl scale deployment 名称  [参数]</code><br><code>--replicas  指定副本数</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale deployment deploy-nginx --replicas=3 -n dev</span><br></pre></td></tr></table></figure>
+
+<p>查看创建的Pod</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods -n dev</span><br></pre></td></tr></table></figure>
+
+<p>查看Deployment信息</p>
+<p><code>UP-TO-DATE：成功升级的副本数量 AVAILABLE：可用副本的数量</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get deploy -n dev</span><br><span class="line">kubectl get deploy -n dev -o wide</span><br></pre></td></tr></table></figure>
+
+<p>查看Deployment详细信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe deploy deploy-nginx -n dev</span><br></pre></td></tr></table></figure>
+
+<p>删除 Deployment</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete deploy deploy-nginx -n dev</span><br></pre></td></tr></table></figure>
+
+<p><strong>字段说明</strong>：</p>
+<ul>
+<li><code>READY</code>：就绪的副本数</li>
+<li><code>UP-TO-DATE</code>：成功升级的副本数量</li>
+<li><code>AVAILABLE</code>：可用副本的数量</li>
+</ul>
+<h4 id="配置Deployment方式"><a href="#配置Deployment方式" class="headerlink" title="配置Deployment方式"></a>配置Deployment方式</h4><p><code>deploy-nginx.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">3</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br><span class="line">          <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">          <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">              <span class="attr">protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以执行对应的创建和删除命令了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f deploy-nginx.yaml</span><br><span class="line">kubectl delete -f deploy-nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="Service（服务发现-负载均衡）"><a href="#Service（服务发现-负载均衡）" class="headerlink" title="Service（服务发现&#x2F;负载均衡）"></a>Service（服务发现&#x2F;负载均衡）</h3><p>Pod IP会随着Pod重建而变化，且仅集群内可见外部无法访问。Service提供固定的访问入口并实现负载均衡</p>
+<p>Service可以看作是一组同类Pod对外的访问入口。借助Service，应用可以方便地实现服务发现和负载均衡</p>
+<p>servuce可以通过集群内部或外部的网络访问这些pod。主要的作用就是让容器能够向外暴露端口，对外进行访问</p>
+<p>Service资源可以聚合提供相同服务的多个Pod，并为它们提供一个统一的入口地址。</p>
+<p>这样通过访问Service的入口地址，就可以访问到后台的Pod服务，而无需关心每个Pod的IP地址的变化</p>
+<p><strong>Service 类型</strong>：</p>
+<ul>
+<li><strong>ClusterIP</strong>（默认）：仅在集群内部可访问</li>
+<li><strong>NodePort</strong>：在每个节点开放端口，可从集群外部访问</li>
+<li><strong>LoadBalancer</strong>：云环境使用，外部负载均衡路由到 NodePort 和 ClusterIP</li>
+<li><strong>ExternalName</strong>：代理集群外部服务</li>
+</ul>
+<h4 id="创建ClusterIP类型Service（集群内部访问）"><a href="#创建ClusterIP类型Service（集群内部访问）" class="headerlink" title="创建ClusterIP类型Service（集群内部访问）"></a>创建ClusterIP类型Service（集群内部访问）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 暴露 Service</span></span><br><span class="line">kubectl expose deploy nginx --name=svc-nginx1 --<span class="built_in">type</span>=ClusterIP --port=80 --target-port=80 -n dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Service</span></span><br><span class="line">kubectl get svc svc-nginx1 -n dev -o wide</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过 ClusterIP 访问</span></span><br><span class="line">curl 10.109.179.231:80</span><br></pre></td></tr></table></figure>
+
+<p><code>这里产生了一个CLUSTER-IP，这就是service的IP，在Service的生命周期中，这个地址是不会变动的 可以通过这个IP访问当前service对应的POD</code></p>
+<h4 id="创建NodePort类型Service（外部访问）"><a href="#创建NodePort类型Service（外部访问）" class="headerlink" title="创建NodePort类型Service（外部访问）"></a>创建NodePort类型Service（外部访问）</h4><p><code>上面创建的Service的type类型为ClusterIP，这个ip地址只用集群内部可访问</code><br><code>如果需要创建外部也可以访问的Service，需要修改type为NodePort</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose deploy nginx --name=svc-nginx2 --<span class="built_in">type</span>=NodePort --port=80 --target-port=80 -n dev</span><br><span class="line"></span><br><span class="line">kubectl get svc svc-nginx2 -n dev -o wide</span><br><span class="line"><span class="comment"># 输出示例：NodePort 10.100.94.0 &lt;none&gt; 80:31928/TCP</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 外部访问：http://&lt;任意节点IP&gt;:31928</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="删除Service"><a href="#删除Service" class="headerlink" title="删除Service"></a>删除Service</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete svc svc-nginx1 -n dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置Service方式"><a href="#配置Service方式" class="headerlink" title="配置Service方式"></a>配置Service方式</h4><p><code>svc-nginx.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">svc-nginx</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以执行对应的创建和删除命令了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f svc-nginx.yaml</span><br><span class="line">kubectl delete -f svc-nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>至此，已经掌握了 Namespace、Pod、Deployment、Service 资源的基本操作，可以在 K8s 集群中实现一个服务的简单部署和访问。</p>
+<h2 id="【掌握】Pod-基础"><a href="#【掌握】Pod-基础" class="headerlink" title="【掌握】Pod 基础"></a>【掌握】Pod 基础</h2><h3 id="Pod基本概念"><a href="#Pod基本概念" class="headerlink" title="Pod基本概念"></a>Pod基本概念</h3><p><strong>Pod 与 Docker、Container 的关系</strong>：</p>
+<ul>
+<li>Docker 是容器引擎，Container 是容器</li>
+<li>Pod 是 K8s 最小的管理单位，封装一个或多个容器</li>
+</ul>
+<p><strong>核心特性</strong>：</p>
+<ul>
+<li>一个 Pod 里的多个容器<strong>共享存储和网络</strong>，可看作一个逻辑主机</li>
+<li>多个容器共享同一个 network namespace，共享 Pod IP 和端口，可通过 <code>localhost</code> 通信（注意端口不冲突）</li>
+<li>不同 Pod 有不同 IP，不同 Pod 间通信使用 Pod IP</li>
+<li>一个 Pod 里的多个容器可以共享存储卷</li>
+</ul>
+<p><strong>Pod 的组成部分</strong>：</p>
+<ul>
+<li><strong>用户程序容器</strong>：一个或多个，运行具体应用进程</li>
+<li><strong>Pause 容器</strong>（根容器）：每个 Pod 都有一个，维护 Pod 网络协议栈，负责 Pod 生命周期管理。Pause 容器的生命周期与 Pod 相同，创建 Pod 时同时创建，删除 Pod 时同时删除。</li>
+</ul>
+<p><strong>Pod 的分类</strong>：</p>
+<ul>
+<li><strong>自主式 Pod</strong>：无控制器管理，删除后不会重新创建</li>
+<li><strong>控制器管理的 Pod</strong>：控制器按策略控制 Pod 数量，少了自动创建，多了自动删除<ul>
+<li><code>Deployment</code>：部署无状态应用，管理 Pod 创建和更新</li>
+<li><code>ReplicaSet</code>：确保 Pod 副本数量（一般随 Deployment 创建）</li>
+<li><code>DaemonSet</code>：保证每个节点都运行一个 Pod 副本</li>
+<li><code>StatefulSet</code>：管理有状态应用，提供稳定网络标识和存储</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pod的YAML-格式"><a href="#Pod的YAML-格式" class="headerlink" title="Pod的YAML 格式"></a>Pod的YAML 格式</h3><p>先看一个yaml格式的pod定义文件解释</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -</span><br><span class="line"></span><br><span class="line">完整的 Pod YAML 定义文件结构（核心字段）：</span><br><span class="line"></span><br><span class="line">```yaml</span><br><span class="line">apiVersion: v1                <span class="comment"># 必选，API 版本号</span></span><br><span class="line">kind: Pod                     <span class="comment"># 必选，资源类型</span></span><br><span class="line">metadata:                     <span class="comment"># 必选，元数据</span></span><br><span class="line">  name: string                <span class="comment"># 必选，Pod 名称</span></span><br><span class="line">  namespace: string           <span class="comment"># 所属命名空间，默认 default</span></span><br><span class="line">  labels:                     <span class="comment"># 自定义标签</span></span><br><span class="line">    - name: string</span><br><span class="line">  annotations:                <span class="comment"># 自定义注释列表</span></span><br><span class="line">    - name: string</span><br><span class="line">spec:                         <span class="comment"># 必选，Pod 中容器的详细定义</span></span><br><span class="line">  containers:                 <span class="comment"># 必选，容器列表</span></span><br><span class="line">    - name: string            <span class="comment"># 必选，容器名称</span></span><br><span class="line">      image: string           <span class="comment"># 必选，镜像名称</span></span><br><span class="line">      imagePullPolicy: [Always | Never | IfNotPresent]</span><br><span class="line">      <span class="built_in">command</span>: [string]       <span class="comment"># 容器启动命令列表</span></span><br><span class="line">      args: [string]          <span class="comment"># 启动命令参数列表</span></span><br><span class="line">      workingDir: string      <span class="comment"># 工作目录</span></span><br><span class="line">      ports:                  <span class="comment"># 暴露的端口号列表</span></span><br><span class="line">        - name: string</span><br><span class="line">          containerPort: int</span><br><span class="line">          protocol: TCP</span><br><span class="line">      <span class="built_in">env</span>:                    <span class="comment"># 环境变量列表</span></span><br><span class="line">        - name: string</span><br><span class="line">          value: string</span><br><span class="line">      resources:              <span class="comment"># 资源限制和请求设置</span></span><br><span class="line">        limits:</span><br><span class="line">          cpu: string</span><br><span class="line">          memory: string</span><br><span class="line">        requests:</span><br><span class="line">          cpu: string</span><br><span class="line">          memory: string</span><br><span class="line">      livenessProbe:          <span class="comment"># 健康检查设置</span></span><br><span class="line">        <span class="built_in">exec</span>:</span><br><span class="line">          <span class="built_in">command</span>: [string]</span><br><span class="line">        httpGet:</span><br><span class="line">          path: string</span><br><span class="line">          port: number</span><br><span class="line">        tcpSocket:</span><br><span class="line">          port: number</span><br><span class="line">        initialDelaySeconds: 0</span><br><span class="line">        timeoutSeconds: 0</span><br><span class="line">        periodSeconds: 0</span><br><span class="line">  restartPolicy: [Always | Never | OnFailure]</span><br><span class="line">  nodeSelector: object        <span class="comment"># 调度到包含指定 label 的节点</span></span><br><span class="line">  hostNetwork: <span class="literal">false</span>          <span class="comment"># 是否使用宿主机网络</span></span><br><span class="line">  volumes:                    <span class="comment"># 共享存储卷列表</span></span><br><span class="line">    - name: string</span><br><span class="line">      emptyDir: &#123;&#125;</span><br><span class="line">      hostPath:</span><br><span class="line">        path: string</span><br><span class="line">      secret:</span><br><span class="line">        secretName: string</span><br><span class="line">      configMap:</span><br><span class="line">        name: string</span><br></pre></td></tr></table></figure>
+
+<h4 id="YAML格式查找帮助方法"><a href="#YAML格式查找帮助方法" class="headerlink" title="YAML格式查找帮助方法"></a>YAML格式查找帮助方法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看 API 版本</span></span><br><span class="line">kubectl api-versions</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看资源写法</span></span><br><span class="line">kubectl explain namespace</span><br><span class="line">kubectl explain pod</span><br><span class="line">kubectl explain pod.spec</span><br><span class="line">kubectl explain pod.spec.containers</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建自主式Pod"><a href="#创建自主式Pod" class="headerlink" title="创建自主式Pod"></a>创建自主式Pod</h3><p>准备 <code>pod1.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">memory-demo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">demo</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">polinux/stress:1.0.4</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;stress&quot;</span>]</span><br><span class="line">      <span class="attr">args:</span> [<span class="string">&quot;--vm&quot;</span>, <span class="string">&quot;1&quot;</span>, <span class="string">&quot;--vm-bytes&quot;</span>, <span class="string">&quot;150M&quot;</span>, <span class="string">&quot;--timeout&quot;</span>, <span class="string">&quot;20&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明</strong>：</p>
+<ul>
+<li><code>--vm-bytes</code>：malloc 分配多少内存</li>
+<li><code>--vm</code>：指定进程数量</li>
+<li><code>--timeout</code>：执行时间（秒），20s 后进程结束</li>
+</ul>
+<p><strong>镜像拉取策略 <code>imagePullPolicy</code></strong>：</p>
+<ul>
+<li><code>Always</code>：总是从仓库下载镜像</li>
+<li><code>Never</code>：只使用本地镜像</li>
+<li><code>IfNotPresent</code>：本地存在则使用，不存在则下载（默认：latest 标签为 Always，指定版本为 IfNotPresent）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建 Pod</span></span><br><span class="line">kubectl apply -f pod1.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Pod</span></span><br><span class="line">kubectl get pod</span><br><span class="line">kubectl get pod memory-demo -o wide</span><br><span class="line">kubectl get pod memory-demo -o yaml</span><br><span class="line">kubectl get pod memory-demo -o yaml &gt; memory-demo-format.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Pod 详情</span></span><br><span class="line">kubectl describe pod memory-demo</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由于 <code>--timeout</code> 约束，容器进程执行完毕后变为 Completed，但 <code>restartPolicy</code> 默认为 Always，容器会重新拉起。</p>
+</blockquote>
+<p><strong>如果拉取镜像慢</strong>（Containerd 运行时）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看命名空间</span></span><br><span class="line">ctr ns <span class="built_in">ls</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拉取镜像到 k8s.io 命名空间</span></span><br><span class="line">ctr -n k8s.io i pull polinux/stress:1.0.4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打标签</span></span><br><span class="line">ctr -n k8s.io i tag polinux/stress:1.0.4 polinux/stress:1.0.4</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pod标签Label"><a href="#Pod标签Label" class="headerlink" title="Pod标签Label"></a>Pod标签Label</h3><p>删除pod</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod memory-demo</span><br></pre></td></tr></table></figure>
+
+<p>删除旧 Pod，创建带标签的新 Pod：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">memory-demo</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&quot;1.0&quot;</span></span><br><span class="line">    <span class="attr">env:</span> <span class="string">&quot;dev&quot;</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">demo</span></span><br><span class="line">      <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">polinux/stress:1.0.4</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;stress&quot;</span>]</span><br><span class="line">      <span class="attr">args:</span> [<span class="string">&quot;--vm&quot;</span>, <span class="string">&quot;1&quot;</span>, <span class="string">&quot;--vm-bytes&quot;</span>, <span class="string">&quot;150M&quot;</span>, <span class="string">&quot;--timeout&quot;</span>, <span class="string">&quot;100&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pod资源限制"><a href="#Pod资源限制" class="headerlink" title="Pod资源限制"></a>Pod资源限制</h3><p>准备2个不同限制方式的创建pod的yaml文件</p>
+<p>通过 <code>resources.limits</code> 和 <code>resources.requests</code> 控制容器的 CPU&#x2F;内存使用。</p>
+<p><strong><code>pod-150.yml</code>（正常运行）</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim pod-150.yml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">namespace1</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">memory-demo-1</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">namespace1</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">memory-demo-ctr1</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">polinux/stress:1.0.4</span></span><br><span class="line">      <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;200Mi&quot;</span></span><br><span class="line">        <span class="attr">requests:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;100Mi&quot;</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;stress&quot;</span>]</span><br><span class="line">      <span class="attr">args:</span> [<span class="string">&quot;--vm&quot;</span>, <span class="string">&quot;1&quot;</span>, <span class="string">&quot;--vm-bytes&quot;</span>, <span class="string">&quot;150M&quot;</span>, <span class="string">&quot;--timeout&quot;</span>, <span class="string">&quot;30&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>pod-250.yml</code>（OOM 被杀）</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim pod-250.yml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">namespace1</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">memory-demo-2</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">namespace1</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">memory-demo-ctr2</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">polinux/stress:1.0.4</span></span><br><span class="line">      <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;200Mi&quot;</span></span><br><span class="line">        <span class="attr">requests:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;100Mi&quot;</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;stress&quot;</span>]</span><br><span class="line">      <span class="attr">args:</span> [<span class="string">&quot;--vm&quot;</span>, <span class="string">&quot;1&quot;</span>, <span class="string">&quot;--vm-bytes&quot;</span>, <span class="string">&quot;250M&quot;</span>, <span class="string">&quot;--timeout&quot;</span>, <span class="string">&quot;30&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>执行并查看结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f pod-150.yml</span><br><span class="line">kubectl apply -f pod-250.yml</span><br><span class="line"></span><br><span class="line">kubectl get pod -n namespace1</span><br><span class="line"><span class="comment"># memory-demo-1: Running</span></span><br><span class="line"><span class="comment"># memory-demo-2: OOMKilled（内存超出限制被杀死）</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>重启策略 <code>restartPolicy</code></strong>：</p>
+<ul>
+<li><code>Always</code>：容器挂了总是重启（默认）</li>
+<li><code>OnFailure</code>：容器状态为错误时才重启（非 0 退出码）</li>
+<li><code>Never</code>：容器挂了不予重启</li>
+</ul>
+<blockquote>
+<p><code>Always</code> 策略采用<strong>线性回退算法</strong>：第一次立即重启，再挂等 10s，第三次等 20s，依次类推。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清理测试资源</span></span><br><span class="line">kubectl delete ns namespace1</span><br></pre></td></tr></table></figure>
+
+<h2 id="Pod交互操作"><a href="#Pod交互操作" class="headerlink" title="Pod交互操作"></a>Pod交互操作</h2><h3 id="一个Pod包含多个容器"><a href="#一个Pod包含多个容器" class="headerlink" title="一个Pod包含多个容器"></a>一个Pod包含多个容器</h3><p>Pod 内多个容器共享网络和存储，适合紧密协作的场景（如主容器 + 日志收集 sidecar）</p>
+<h4 id="准备yml文件"><a href="#准备yml文件" class="headerlink" title="准备yml文件"></a>准备yml文件</h4><p><code>pod-multi-ctr.yml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">memory-demo</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">memory-demo-ctr-1</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">polinux/stress:1.0.4</span></span><br><span class="line">      <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;200Mi&quot;</span></span><br><span class="line">        <span class="attr">requests:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;100Mi&quot;</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;stress&quot;</span>]</span><br><span class="line">      <span class="attr">args:</span> [<span class="string">&quot;--vm&quot;</span>, <span class="string">&quot;1&quot;</span>, <span class="string">&quot;--vm-bytes&quot;</span>, <span class="string">&quot;150M&quot;</span>, <span class="string">&quot;--timeout&quot;</span>, <span class="string">&quot;300&quot;</span>]</span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">memory-demo-ctr-2</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">polinux/stress:1.0.4</span></span><br><span class="line">      <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;200Mi&quot;</span></span><br><span class="line">        <span class="attr">requests:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">&quot;100Mi&quot;</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;stress&quot;</span>]</span><br><span class="line">      <span class="attr">args:</span> [<span class="string">&quot;--vm&quot;</span>, <span class="string">&quot;1&quot;</span>, <span class="string">&quot;--vm-bytes&quot;</span>, <span class="string">&quot;150M&quot;</span>, <span class="string">&quot;--timeout&quot;</span>, <span class="string">&quot;300&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<h4 id="应用yml文件创建pod"><a href="#应用yml文件创建pod" class="headerlink" title="应用yml文件创建pod"></a>应用yml文件创建pod</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f pod-multi-ctr.yml</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看pod在哪个节点"><a href="#查看pod在哪个节点" class="headerlink" title="查看pod在哪个节点"></a>查看pod在哪个节点</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods -n kube-system -o wide</span><br></pre></td></tr></table></figure>
+
+<h4 id="在node2上验证-确实产生了2个容器"><a href="#在node2上验证-确实产生了2个容器" class="headerlink" title="在node2上验证,确实产生了2个容器"></a>在node2上验证,确实产生了2个容器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a |grep stress</span><br></pre></td></tr></table></figure>
+
+<p><code>docker在这里作为了解，因为我们安装的 K8S 集群，大部分是默认使用 containerd 作为了容器运行时</code></p>
+<h3 id="对Pod里的容器进行操作"><a href="#对Pod里的容器进行操作" class="headerlink" title="对Pod里的容器进行操作"></a>对Pod里的容器进行操作</h3><p>命令帮助：<code>kubectl exec -h</code></p>
+<p><strong>格式</strong>：<code>kubectl exec &lt;pod名&gt; -c &lt;容器名&gt; -- &lt;命令&gt;</code></p>
+<ul>
+<li><code>-c 容器名</code> 为可选项：单容器 Pod 不用指定；多容器 Pod 不指定时默认为第一个容器</li>
+</ul>
+<h4 id="直接执行命令（非交互）"><a href="#直接执行命令（非交互）" class="headerlink" title="直接执行命令（非交互）"></a>直接执行命令（非交互）</h4><p><code>格式为: kubectl exec pod名 -c 容器名 -- 命令</code></p>
+<blockquote>
+<p>注意:<br>-c 容器名为可选项,如果是1个pod中1个容器,则不用指定;<br>如果是1个pod中多个容器,不指定默认为第1个</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在指定容器中执行命令</span></span><br><span class="line">kubectl <span class="built_in">exec</span> -n kube-system memory-demo -c memory-demo-ctr-1 -- <span class="built_in">touch</span> /111</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不指定容器名，默认第一个容器</span></span><br><span class="line">kubectl <span class="built_in">exec</span> -n kube-system memory-demo -- <span class="built_in">touch</span> /222</span><br></pre></td></tr></table></figure>
+
+<h4 id="交互式进入容器（最常用）"><a href="#交互式进入容器（最常用）" class="headerlink" title="交互式进入容器（最常用）"></a>交互式进入容器（最常用）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入容器终端</span></span><br><span class="line">kubectl <span class="built_in">exec</span> -n kube-system -it memory-demo -c memory-demo-ctr-1 /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入后操作</span></span><br><span class="line">bash-4.3# <span class="built_in">touch</span> /333</span><br><span class="line">bash-4.3# <span class="built_in">ls</span></span><br><span class="line">bash-4.3# <span class="built_in">exit</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推荐写法（加上 -- 更规范）</span></span><br><span class="line">kubectl <span class="built_in">exec</span> -n kube-system -it memory-demo -- /bin/bash</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清理</span></span><br><span class="line">kubectl delete pod memory-demo -n kube-system</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结-3"><a href="#总结-3" class="headerlink" title="总结~~"></a>总结~~</h3><table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Node 管理</strong></td>
+<td><code>kubectl get nodes</code>、标签调度（<code>-l</code>&#x2F;<code>-L</code>）、节点维护</td>
+</tr>
+<tr>
+<td><strong>YAML 语法</strong></td>
+<td>大小写敏感、空格缩进、三种数据类型（标量&#x2F;序列&#x2F;映射）</td>
+</tr>
+<tr>
+<td><strong>资源管理方式</strong></td>
+<td>声明式（<code>apply</code>）优于命令式，推荐日常使用</td>
+</tr>
+<tr>
+<td><strong>Namespace</strong></td>
+<td>隔离环境，常用 <code>dev</code>、<code>test</code>、<code>prod</code></td>
+</tr>
+<tr>
+<td><strong>Pod</strong></td>
+<td>最小调度单元，包含一个或多个容器，共享网络&#x2F;存储，有 Pause 根容器</td>
+</tr>
+<tr>
+<td><strong>Label</strong></td>
+<td>键值对，用于分组、筛选，是 Service 和调度的基础</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>无状态应用控制器，支持滚动更新、回滚、扩缩容</td>
+</tr>
+<tr>
+<td><strong>Service</strong></td>
+<td>提供稳定访问入口，ClusterIP（内部）、NodePort（外部）</td>
+</tr>
+<tr>
+<td><strong>Pod 多容器</strong></td>
+<td>适合 sidecar 模式，需注意端口不冲突</td>
+</tr>
+<tr>
+<td><strong>资源限制</strong></td>
+<td><code>requests</code> 和 <code>limits</code> 控制 CPU&#x2F;内存，避免资源争抢</td>
+</tr>
+<tr>
+<td><strong>交互调试</strong></td>
+<td><code>kubectl exec</code> 进入容器，<code>kubectl logs</code> 查看日志</td>
+</tr>
+<tr>
+<td><strong>镜像拉取策略</strong></td>
+<td><code>Always</code> &#x2F; <code>Never</code> &#x2F; <code>IfNotPresent</code></td>
+</tr>
+<tr>
+<td><strong>重启策略</strong></td>
+<td><code>Always</code> &#x2F; <code>OnFailure</code> &#x2F; <code>Never</code></td>
+</tr>
+<tr>
+<td><strong>排错思路</strong></td>
+<td>先看节点状态，再看 Pod 日志，检查镜像拉取和网络互通</td>
+</tr>
+</tbody></table>
+<p><strong>最后思考</strong>：为什么 Pod 是 K8s 的最小调度单元而不是容器？</p>
+<p>因为 Pod 封装了多个共享资源的容器，使得容器间可以高效通信（localhost）和共享存储，这比单独调度每个容器更符合实际微服务架构的需求。Pause 容器作为根容器，维护了 Pod 的网络命名空间，让所有用户容器共享同一个 IP 和网络栈。</p>
+<hr>
+<p>掌握了这些基础，你已能独立部署和管理一个 K8s 应用。接下来可深入学习 <strong>PersistentVolume（存储）</strong>、<strong>Ingress（七层路由）</strong>、<strong>Helm（包管理）</strong> 等高级主题。如果你在实战中遇到问题，欢迎留言交流。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2026/08/23/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E5%9F%BA%E7%A1%80/">http://example.com/2026/08/23/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E5%9F%BA%E7%A1%80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/24/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E8%BF%9B%E9%98%B6/" title="Kubernetes资源管理与Pod进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Kubernetes资源管理与Pod进阶</div></div><div class="info-2"><div class="info-item-1">Kubernetes 资源管理与 Pod 进阶：从调度到生命周期全解析在 Kubernetes 集群中，Pod 是最小的部署单元，但如何让 Pod 恰到好处地运行在合适的节点上？Pod 启动后如何保证它的健康状态？这些问题是每一个 K8s 使用者都必须掌握的核心技能。今天，我们就从 Pod 的创建流程讲起，逐步深入调度策略、生命周期管理以及健康检查，最后附上常见故障排查技巧。无论你是刚入门的新手，还是有一定经验的开发者，这篇文章都能帮你构建完整的知识体系。  Pod 是如何被创建出来的？很多人以为执行 kubectl create pod 后，Pod 就“嗖”地一下出现了。实际上，这背后有一套精密的协作流程。 Step 1：用户提交 Pod 定义我们通过 kubectl 向 API Server 发起创建 Pod 的请求，这通常是一个 YAML 或 JSON 文件。 Step 2：API Server 接收并持久化API Server 收到请求后，并不会直接创建 Pod，而是生成一份标准的 YAML 描述，并将其写入 etcd 数据库。此时，仅仅是在 etcd 中多了一条记录，没...</div></div></div></a><a class="pagination-related" href="/2026/08/23/Kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="Kubernetes集群安装部署"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Kubernetes集群安装部署</div></div><div class="info-2"><div class="info-item-1">Kubernetes 集群安装部署全攻略：从入门到生产级多主集群前言：为什么我们需要 Kubernetes？如果你已经使用过 Docker 或 Containerd，你可能已经体会到容器带来的轻量和便捷。但当你真正把容器应用到生产环境时，你会发现单机容器管理远远不够：  容器宕机了，谁来自动重启？ 流量突增，如何一键扩容？ 新版本发布出现问题，如何快速回滚？ 多个容器之间如何互相发现和负载均衡？  这些问题的答案，就是 容器编排。而 Kubernetes（K8s）正是当今容器编排领域的绝对标准。  应用部署方式的演变（理解 K8s 出现的必然性）传统物理机部署早期，应用程序直接跑在物理服务器上。问题很明显：  资源争抢：多个应用共享一台物理机，一个应用可能耗尽 CPU 或内存，导致其他应用卡顿。 成本高昂：每个应用单独占一台物理机，资源利用率极低，维护成本巨大。   优点：简单直接。缺点：无资源隔离，扩展性差，成本高。  虚拟化部署（VM）虚拟化技术（如 VMware、KVM）允许在一台物理机上运行多台虚拟机，每台 VM 拥有独立的操作系统和资源。  优点：隔离性好：应用之间互不...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">John Doe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E4%BA%86%E8%A7%A3%E3%80%91Node-%E8%8A%82%E7%82%B9%E7%AE%A1%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">【了解】Node 节点管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9"><span class="toc-number">1.1.</span> <span class="toc-text">查看帮助</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.</span> <span class="toc-text">查看集群信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.1.</span> <span class="toc-text">查看节点信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A9-Node-%E8%8A%82%E7%82%B9%E4%B9%9F%E8%83%BD%E6%89%A7%E8%A1%8C-kubectl-%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.2.</span> <span class="toc-text">让 Node 节点也能执行 kubectl 命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E6%A0%87%E7%AD%BE%EF%BC%88Label%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">节点标签（Label）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%8A%82%E7%82%B9%E6%A0%87%E7%AD%BE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">设置节点标签信息</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E6%A0%87%E7%AD%BE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">查看节点标签信息</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%A0%87%E7%AD%BE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">修改标签信息</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%A0%87%E7%AD%BE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">删除标签信息</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E7%AD%BE%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">标签选择器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.5.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E6%8E%8C%E6%8F%A1%E3%80%91%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">【掌握】资源管理介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#YAML-%E8%AF%AD%E8%A8%80%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.1.</span> <span class="toc-text">YAML 语言介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.1.1.</span> <span class="toc-text">数据类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">资源管理方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E3%80%81Pod%E3%80%81%E5%AD%98%E5%82%A8%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.2.1.</span> <span class="toc-text">容器、Pod、存储的关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.2.</span> <span class="toc-text">三种资源管理方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E5%BC%8F%E5%AF%B9%E8%B1%A1%E7%AE%A1%E7%90%86"><span class="toc-number">2.2.3.</span> <span class="toc-text">命令式对象管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E5%BC%8F%E5%AF%B9%E8%B1%A1%E9%85%8D%E7%BD%AE"><span class="toc-number">2.2.4.</span> <span class="toc-text">命令式对象配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">2.2.4.1.</span> <span class="toc-text">总结~~~~~</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%BC%8F%E5%AF%B9%E8%B1%A1%E9%85%8D%E7%BD%AE%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="toc-number">2.2.5.</span> <span class="toc-text">声明式对象配置（推荐）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F%E4%BD%BF%E7%94%A8%E6%8E%A8%E8%8D%90"><span class="toc-number">2.2.5.1.</span> <span class="toc-text">三种方式使用推荐</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-2"><span class="toc-number">2.2.5.2.</span> <span class="toc-text">总结~~~</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E5%AE%9E%E8%B7%B5%E3%80%91%E9%83%A8%E7%BD%B2-Nginx-%E6%9C%8D%E5%8A%A1"><span class="toc-number">3.</span> <span class="toc-text">【实践】部署 Nginx 服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Namespace%EF%BC%88%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">Namespace（命名空间）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Namespace%E6%93%8D%E4%BD%9C"><span class="toc-number">3.1.1.</span> <span class="toc-text">Namespace操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-number">3.1.2.</span> <span class="toc-text">配置方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod%EF%BC%88%E5%AE%B9%E5%99%A8%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">Pod（容器）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%B9%B6%E8%BF%90%E8%A1%8CPod"><span class="toc-number">3.2.1.</span> <span class="toc-text">创建并运行Pod</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%EF%BC%9A%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86%E9%95%9C%E5%83%8F%E5%90%8D-nginx-1-24-0-%E5%8D%B3%E5%8F%AF"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">注意：直接使用标准镜像名 nginx:1.24.0 即可</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8BPod%E4%BF%A1%E6%81%AF"><span class="toc-number">3.2.2.</span> <span class="toc-text">查看Pod信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEPod"><span class="toc-number">3.2.3.</span> <span class="toc-text">访问Pod</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4Pod"><span class="toc-number">3.2.4.</span> <span class="toc-text">删除Pod</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%93%8D%E4%BD%9C"><span class="toc-number">3.2.5.</span> <span class="toc-text">配置操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99"><span class="toc-number">3.2.6.</span> <span class="toc-text">常见报错</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Label%EF%BC%88%E6%A0%87%E7%AD%BE%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">Label（标签）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Label%E6%93%8D%E4%BD%9C"><span class="toc-number">3.3.1.</span> <span class="toc-text">Label操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AELabel%E6%96%B9%E5%BC%8F"><span class="toc-number">3.3.2.</span> <span class="toc-text">配置Label方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deployment%EF%BC%88%E9%83%A8%E7%BD%B2%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">Deployment（部署）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Deployment%E5%91%BD%E4%BB%A4%E6%93%8D%E4%BD%9C"><span class="toc-number">3.4.1.</span> <span class="toc-text">Deployment命令操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEDeployment%E6%96%B9%E5%BC%8F"><span class="toc-number">3.4.2.</span> <span class="toc-text">配置Deployment方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Service%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">Service（服务发现&#x2F;负载均衡）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAClusterIP%E7%B1%BB%E5%9E%8BService%EF%BC%88%E9%9B%86%E7%BE%A4%E5%86%85%E9%83%A8%E8%AE%BF%E9%97%AE%EF%BC%89"><span class="toc-number">3.5.1.</span> <span class="toc-text">创建ClusterIP类型Service（集群内部访问）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BANodePort%E7%B1%BB%E5%9E%8BService%EF%BC%88%E5%A4%96%E9%83%A8%E8%AE%BF%E9%97%AE%EF%BC%89"><span class="toc-number">3.5.2.</span> <span class="toc-text">创建NodePort类型Service（外部访问）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4Service"><span class="toc-number">3.5.3.</span> <span class="toc-text">删除Service</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEService%E6%96%B9%E5%BC%8F"><span class="toc-number">3.5.4.</span> <span class="toc-text">配置Service方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">3.5.5.</span> <span class="toc-text">小结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E6%8E%8C%E6%8F%A1%E3%80%91Pod-%E5%9F%BA%E7%A1%80"><span class="toc-number">4.</span> <span class="toc-text">【掌握】Pod 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">4.1.</span> <span class="toc-text">Pod基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod%E7%9A%84YAML-%E6%A0%BC%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">Pod的YAML 格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#YAML%E6%A0%BC%E5%BC%8F%E6%9F%A5%E6%89%BE%E5%B8%AE%E5%8A%A9%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.1.</span> <span class="toc-text">YAML格式查找帮助方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E4%B8%BB%E5%BC%8FPod"><span class="toc-number">4.3.</span> <span class="toc-text">创建自主式Pod</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod%E6%A0%87%E7%AD%BELabel"><span class="toc-number">4.4.</span> <span class="toc-text">Pod标签Label</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6"><span class="toc-number">4.5.</span> <span class="toc-text">Pod资源限制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pod%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C"><span class="toc-number">5.</span> <span class="toc-text">Pod交互操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AAPod%E5%8C%85%E5%90%AB%E5%A4%9A%E4%B8%AA%E5%AE%B9%E5%99%A8"><span class="toc-number">5.1.</span> <span class="toc-text">一个Pod包含多个容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%86%E5%A4%87yml%E6%96%87%E4%BB%B6"><span class="toc-number">5.1.1.</span> <span class="toc-text">准备yml文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8yml%E6%96%87%E4%BB%B6%E5%88%9B%E5%BB%BApod"><span class="toc-number">5.1.2.</span> <span class="toc-text">应用yml文件创建pod</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8Bpod%E5%9C%A8%E5%93%AA%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="toc-number">5.1.3.</span> <span class="toc-text">查看pod在哪个节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8node2%E4%B8%8A%E9%AA%8C%E8%AF%81-%E7%A1%AE%E5%AE%9E%E4%BA%A7%E7%94%9F%E4%BA%862%E4%B8%AA%E5%AE%B9%E5%99%A8"><span class="toc-number">5.1.4.</span> <span class="toc-text">在node2上验证,确实产生了2个容器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9Pod%E9%87%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C"><span class="toc-number">5.2.</span> <span class="toc-text">对Pod里的容器进行操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%EF%BC%88%E9%9D%9E%E4%BA%A4%E4%BA%92%EF%BC%89"><span class="toc-number">5.2.1.</span> <span class="toc-text">直接执行命令（非交互）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E8%BF%9B%E5%85%A5%E5%AE%B9%E5%99%A8%EF%BC%88%E6%9C%80%E5%B8%B8%E7%94%A8%EF%BC%89"><span class="toc-number">5.2.2.</span> <span class="toc-text">交互式进入容器（最常用）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-3"><span class="toc-number">5.3.</span> <span class="toc-text">总结~~</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/03/%E6%B5%8B%E8%AF%95/" title="Untitled">Untitled</a><time datetime="2026-09-03T07:25:34.670Z" title="Created 2026-09-03 15:25:34">2026-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/01/%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8/" title="命令速查表">命令速查表</a><time datetime="2026-09-01T03:20:49.000Z" title="Created 2026-09-01 11:20:49">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/27/Nginx%E5%8D%95%E6%9C%BA%E9%83%A8%E7%BD%B2/" title="Nginx单机部署">Nginx单机部署</a><time datetime="2026-08-27T06:52:36.000Z" title="Created 2026-08-27 14:52:36">2026-08-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/26/DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/" title="DNS服务器">DNS服务器</a><time datetime="2026-08-26T07:31:50.000Z" title="Created 2026-08-26 15:31:50">2026-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/26/%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1/" title="共享文件和目录服务">共享文件和目录服务</a><time datetime="2026-08-26T06:20:25.000Z" title="Created 2026-08-26 14:20:25">2026-08-26</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

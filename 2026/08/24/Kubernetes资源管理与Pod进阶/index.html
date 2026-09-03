@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Kubernetes资源管理与Pod进阶 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Kubernetes 资源管理与 Pod 进阶：从调度到生命周期全解析在 Kubernetes 集群中，Pod 是最小的部署单元，但如何让 Pod 恰到好处地运行在合适的节点上？Pod 启动后如何保证它的健康状态？这些问题是每一个 K8s 使用者都必须掌握的核心技能。今天，我们就从 Pod 的创建流程讲起，逐步深入调度策略、生命周期管理以及健康检查，最后附上常见故障排查技巧。无论你是刚入门的新手，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes资源管理与Pod进阶">
+<meta property="og:url" content="http://example.com/2026/08/24/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Kubernetes 资源管理与 Pod 进阶：从调度到生命周期全解析在 Kubernetes 集群中，Pod 是最小的部署单元，但如何让 Pod 恰到好处地运行在合适的节点上？Pod 启动后如何保证它的健康状态？这些问题是每一个 K8s 使用者都必须掌握的核心技能。今天，我们就从 Pod 的创建流程讲起，逐步深入调度策略、生命周期管理以及健康检查，最后附上常见故障排查技巧。无论你是刚入门的新手，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-08-24T02:48:22.000Z">
+<meta property="article:modified_time" content="2026-08-24T02:48:47.296Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Kubernetes资源管理与Pod进阶",
+  "url": "http://example.com/2026/08/24/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E8%BF%9B%E9%98%B6/",
+  "image": "http://example.com/img/butterfly-icon.png",
+  "datePublished": "2026-08-24T02:48:22.000Z",
+  "dateModified": "2026-08-24T02:48:47.296Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "John Doe",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/08/24/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E8%BF%9B%E9%98%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Kubernetes资源管理与Pod进阶',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">Kubernetes资源管理与Pod进阶</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Kubernetes资源管理与Pod进阶</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-08-24T02:48:22.000Z" title="Created 2026-08-24 10:48:22">2026-08-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-08-24T02:48:47.296Z" title="Updated 2026-08-24 10:48:47">2026-08-24</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="Kubernetes-资源管理与-Pod-进阶：从调度到生命周期全解析"><a href="#Kubernetes-资源管理与-Pod-进阶：从调度到生命周期全解析" class="headerlink" title="Kubernetes 资源管理与 Pod 进阶：从调度到生命周期全解析"></a>Kubernetes 资源管理与 Pod 进阶：从调度到生命周期全解析</h2><p>在 Kubernetes 集群中，Pod 是最小的部署单元，但如何让 Pod 恰到好处地运行在合适的节点上？Pod 启动后如何保证它的健康状态？这些问题是每一个 K8s 使用者都必须掌握的核心技能。今天，我们就从 Pod 的创建流程讲起，逐步深入调度策略、生命周期管理以及健康检查，最后附上常见故障排查技巧。无论你是刚入门的新手，还是有一定经验的开发者，这篇文章都能帮你构建完整的知识体系。</p>
+<hr>
+<h3 id="Pod-是如何被创建出来的？"><a href="#Pod-是如何被创建出来的？" class="headerlink" title="Pod 是如何被创建出来的？"></a>Pod 是如何被创建出来的？</h3><p>很多人以为执行 <code>kubectl create pod</code> 后，Pod 就“嗖”地一下出现了。实际上，这背后有一套精密的协作流程。</p>
+<p><strong>Step 1：用户提交 Pod 定义</strong><br>我们通过 <code>kubectl</code> 向 API Server 发起创建 Pod 的请求，这通常是一个 YAML 或 JSON 文件。</p>
+<p><strong>Step 2：API Server 接收并持久化</strong><br>API Server 收到请求后，并不会直接创建 Pod，而是生成一份标准的 YAML 描述，并将其写入 etcd 数据库。此时，仅仅是在 etcd 中多了一条记录，没有任何容器被启动。</p>
+<p><strong>Step 3：调度器（Scheduler）介入</strong><br>Scheduler 通过 watch 机制检测到新的 Pod 对象（且 <code>pod.spec.nodeName</code> 为空），于是执行调度算法，在所有可用节点中选出最适合的一个，然后把节点名称写回到 Pod 的 <code>spec.nodeName</code> 字段，并更新 etcd。</p>
+<p><strong>Step 4：节点上的 kubelet 真正创建容器</strong><br>每个节点上的 kubelet 也在持续监听 etcd 中的变化。当它发现某个 Pod 的 <code>nodeName</code> 指向自己时，就会调用本地的容器运行时（如 Containerd）来创建实际的容器。</p>
+<p>整个流程就像是一个接力赛：用户提交 → API Server 记录 → Scheduler 选址 → Kubelet 执行。理解这个过程，对我们后续排查“Pod 一直 Pending”的问题非常有帮助。</p>
+<hr>
+<h3 id="Pod-调度策略：让-Pod-去它该去的地方"><a href="#Pod-调度策略：让-Pod-去它该去的地方" class="headerlink" title="Pod 调度策略：让 Pod 去它该去的地方"></a>Pod 调度策略：让 Pod 去它该去的地方</h3><p>默认情况下，Scheduler 会根据资源均衡等算法自动选择节点。但实际生产中，我们经常需要干预调度，比如把需要 GPU 的 Pod 放到有 GPU 的节点上，或者把两个频繁通信的 Pod 放在一起以减少网络延迟。Kubernetes 提供了四大类调度方式。</p>
+<h4 id="定向调度（强制指定）"><a href="#定向调度（强制指定）" class="headerlink" title="定向调度（强制指定）"></a>定向调度（强制指定）</h4><h5 id="使用-nodeName"><a href="#使用-nodeName" class="headerlink" title="使用 nodeName"></a>使用 nodeName</h5><p>这是最直接的方式 —— 直接在 Pod 的 YAML 中写明要调度到的节点名称。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-nodename</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">nodeName:</span> <span class="string">node1</span>   <span class="comment"># 直接指定节点名</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br></pre></td></tr></table></figure>
+
+<p>如果指定的节点不存在或不可用，Pod 会一直处于 Pending 状态。这种方式简单粗暴，但不够灵活。</p>
+<h5 id="使用-nodeSelector"><a href="#使用-nodeSelector" class="headerlink" title="使用 nodeSelector"></a>使用 nodeSelector</h5><p>通过节点的标签（Label）来筛选。首先给节点打标签：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label node node2 business=game</span><br></pre></td></tr></table></figure>
+
+<p>然后在 Pod 中声明需要匹配的标签：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-nodeselect</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">nodeSelector:</span></span><br><span class="line">    <span class="attr">business:</span> <span class="string">game</span>   <span class="comment"># 必须匹配 business=game 的节点</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有任何节点带有该标签，Pod 同样会 Pending。定向调度的缺点是过于“刚性”，一旦条件不满足，Pod 就无法运行。</p>
+<h4 id="亲和性调度（更灵活的选择）"><a href="#亲和性调度（更灵活的选择）" class="headerlink" title="亲和性调度（更灵活的选择）"></a>亲和性调度（更灵活的选择）</h4><p>亲和性调度分为<strong>硬亲和（required）<strong>和</strong>软亲和（preferred）</strong>。硬亲和是必须满足的条件，否则 Pod 不会调度；软亲和则是优先满足，如果没有合适的节点，也会调度到其他节点。</p>
+<h5 id="NodeAffinity（节点亲和）"><a href="#NodeAffinity（节点亲和）" class="headerlink" title="NodeAffinity（节点亲和）"></a>NodeAffinity（节点亲和）</h5><p>我们来看一个硬亲和的例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-nodeaffinity-required</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br><span class="line">  <span class="attr">affinity:</span></span><br><span class="line">    <span class="attr">nodeAffinity:</span></span><br><span class="line">      <span class="attr">requiredDuringSchedulingIgnoredDuringExecution:</span></span><br><span class="line">        <span class="attr">nodeSelectorTerms:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">matchExpressions:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">nodeenv</span></span><br><span class="line">            <span class="attr">operator:</span> <span class="string">In</span></span><br><span class="line">            <span class="attr">values:</span> [<span class="string">&quot;xxx&quot;</span>, <span class="string">&quot;yyy&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>这里要求节点必须带有 <code>nodeenv</code> 标签，且其值在 <code>xxx</code> 或 <code>yyy</code> 中。如果集群中没有符合条件的节点，Pod 将无法调度。</p>
+<p>软亲和示例：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">affinity:</span></span><br><span class="line">  <span class="attr">nodeAffinity:</span></span><br><span class="line">    <span class="attr">preferredDuringSchedulingIgnoredDuringExecution:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">weight:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">preference:</span></span><br><span class="line">        <span class="attr">matchExpressions:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">nodeenv</span></span><br><span class="line">          <span class="attr">operator:</span> <span class="string">In</span></span><br><span class="line">          <span class="attr">values:</span> [<span class="string">&quot;xxx&quot;</span>, <span class="string">&quot;yyy&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>即使找不到 <code>nodeenv=xxx/yyy</code> 的节点，Pod 依然会被调度到其他节点，只是权重较低。</p>
+<h5 id="PodAffinity（Pod-亲和）"><a href="#PodAffinity（Pod-亲和）" class="headerlink" title="PodAffinity（Pod 亲和）"></a>PodAffinity（Pod 亲和）</h5><p>有时候我们希望两个 Pod 部署在同一个节点或同一个拓扑域（比如同一个机架）中，以减少网络开销。这时可以使用 PodAffinity。</p>
+<p>首先创建一个参照 Pod（带有标签 <code>podenv=pro</code>）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-podaffinity-target</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">podenv:</span> <span class="string">pro</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br><span class="line">  <span class="attr">nodeName:</span> <span class="string">node1</span>   <span class="comment"># 明确指定在 node1</span></span><br></pre></td></tr></table></figure>
+
+<p>然后创建新 Pod，要求与参照 Pod 在同一节点（topologyKey 为 <code>kubernetes.io/hostname</code>）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-podaffinity-required</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.24.0</span></span><br><span class="line">  <span class="attr">affinity:</span></span><br><span class="line">    <span class="attr">podAffinity:</span></span><br><span class="line">      <span class="attr">requiredDuringSchedulingIgnoredDuringExecution:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">labelSelector:</span></span><br><span class="line">          <span class="attr">matchExpressions:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">podenv</span></span><br><span class="line">            <span class="attr">operator:</span> <span class="string">In</span></span><br><span class="line">            <span class="attr">values:</span> [<span class="string">&quot;pro&quot;</span>]</span><br><span class="line">        <span class="attr">topologyKey:</span> <span class="string">kubernetes.io/hostname</span></span><br></pre></td></tr></table></figure>
+
+<p>如果参照 Pod 在 node1，新 Pod 也会被调度到 node1。如果不存在符合条件的 Pod，则调度失败。</p>
+<h5 id="PodAntiAffinity（Pod-反亲和）"><a href="#PodAntiAffinity（Pod-反亲和）" class="headerlink" title="PodAntiAffinity（Pod 反亲和）"></a>PodAntiAffinity（Pod 反亲和）</h5><p>反亲和恰好相反，它要求新 Pod 不能与某些 Pod 在同一个拓扑域中，常用于高可用部署，将多个副本分散到不同节点。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">affinity:</span></span><br><span class="line">  <span class="attr">podAntiAffinity:</span></span><br><span class="line">    <span class="attr">requiredDuringSchedulingIgnoredDuringExecution:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">labelSelector:</span></span><br><span class="line">        <span class="attr">matchExpressions:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">podenv</span></span><br><span class="line">          <span class="attr">operator:</span> <span class="string">In</span></span><br><span class="line">          <span class="attr">values:</span> [<span class="string">&quot;pro&quot;</span>]</span><br><span class="line">      <span class="attr">topologyKey:</span> <span class="string">kubernetes.io/hostname</span></span><br></pre></td></tr></table></figure>
+
+<p>这个配置表示新 Pod 不能被调度到带有 <code>podenv=pro</code> 标签的 Pod 所在的节点上。</p>
+<h4 id="污点（Taints）与容忍（Toleration）"><a href="#污点（Taints）与容忍（Toleration）" class="headerlink" title="污点（Taints）与容忍（Toleration）"></a>污点（Taints）与容忍（Toleration）</h4><p>前面都是从 Pod 角度“主动选择”节点。污点则是从节点角度“拒绝”Pod。节点上可以设置污点，Pod 可以通过容忍来“忽略”这些拒绝。</p>
+<p>污点的格式是 <code>key=value:effect</code>，effect 有三种：</p>
+<ul>
+<li><strong>PreferNoSchedule</strong>：尽量不调度，但非强制。</li>
+<li><strong>NoSchedule</strong>：一定不调度新 Pod，但不影响已有 Pod。</li>
+<li><strong>NoExecute</strong>：不仅不调度新 Pod，还会驱逐已有的不匹配的 Pod。</li>
+</ul>
+<p>设置污点示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes node1 tag=heima:NoSchedule</span><br></pre></td></tr></table></figure>
+
+<p>去除污点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes node1 tag:NoSchedule-</span><br></pre></td></tr></table></figure>
+
+<p>那么，如果有一个 Pod 无论如何都想跑到 node1 上，就可以添加容忍：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tolerations:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">key:</span> <span class="string">&quot;tag&quot;</span></span><br><span class="line">  <span class="attr">operator:</span> <span class="string">&quot;Equal&quot;</span></span><br><span class="line">  <span class="attr">value:</span> <span class="string">&quot;heima&quot;</span></span><br><span class="line">  <span class="attr">effect:</span> <span class="string">&quot;NoSchedule&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样，即使 node1 有 NoSchedule 污点，该 Pod 也能被调度上去。</p>
+<p><strong>小思考</strong>：为什么我们从来不会把 Pod 调度到 master 节点？因为默认 master 节点被添加了 <code>node-role.kubernetes.io/master:NoSchedule</code> 污点，普通 Pod 没有容忍，自然无法调度过去。</p>
+<hr>
+<h3 id="Pod-的生命周期与健康检查"><a href="#Pod-的生命周期与健康检查" class="headerlink" title="Pod 的生命周期与健康检查"></a>Pod 的生命周期与健康检查</h3><p>Pod 从创建到终止，经历了一系列状态变化，我们可以利用这些阶段来做很多自动化的事情。</p>
+<h4 id="生命周期概览"><a href="#生命周期概览" class="headerlink" title="生命周期概览"></a>生命周期概览</h4><ol>
+<li><strong>Pending</strong>：Pod 已被创建，但尚未调度完成或镜像拉取中。</li>
+<li><strong>Running</strong>：所有容器已创建，至少有一个容器正在运行。</li>
+<li><strong>Succeeded</strong> 或 <strong>Failed</strong>：所有容器正常终止（退出码 0）或异常终止（非 0）。</li>
+<li><strong>Unknown</strong>：无法获取 Pod 状态，通常因为 kubelet 与 API Server 通信中断。</li>
+</ol>
+<p>在容器运行过程中，Kubernetes 提供了三种探针（Probe）来检测容器的健康状况：</p>
+<ul>
+<li><strong>livenessProbe</strong>（存活探针）：检测容器是否“活着”。如果失败，kubelet 会重启该容器。</li>
+<li><strong>readinessProbe</strong>（就绪探针）：检测容器是否“准备好”接收流量。如果失败，Pod 会从 Service 的 Endpoints 中移除，不接收请求。</li>
+<li><strong>startupProbe</strong>（启动探针）：用于慢启动容器，在启动成功之前，不会让 liveness 和 readiness 干扰。</li>
+</ul>
+<h4 id="三种探测方式"><a href="#三种探测方式" class="headerlink" title="三种探测方式"></a>三种探测方式</h4><ol>
+<li><strong>Exec</strong>：在容器内执行命令，返回码为 0 表示成功。</li>
+<li><strong>HTTPGet</strong>：访问容器的 HTTP 端点，状态码 200~399 表示成功。</li>
+<li><strong>TCPSocket</strong>：尝试与容器的指定端口建立 TCP 连接，成功则表示健康。</li>
+</ol>
+<h5 id="案例：liveness-exec"><a href="#案例：liveness-exec" class="headerlink" title="案例：liveness-exec"></a>案例：liveness-exec</h5><p>创建一个 Pod，容器启动后创建文件 <code>/tmp/healthy</code>，30 秒后删除。存活探针每隔 5 秒检查该文件是否存在，若不存在则重启容器。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">liveness-exec</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">liveness</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">    <span class="attr">args:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/bin/sh</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">-c</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">touch</span> <span class="string">/tmp/healthy;</span> <span class="string">sleep</span> <span class="number">30</span><span class="string">;</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/tmp/healthy;</span> <span class="string">sleep</span> <span class="number">600</span></span><br><span class="line">    <span class="attr">livenessProbe:</span></span><br><span class="line">      <span class="attr">exec:</span></span><br><span class="line">        <span class="attr">command:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">cat</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/tmp/healthy</span></span><br><span class="line">      <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">periodSeconds:</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>kubectl describe pod liveness-exec</code> 可以看到容器因探针失败而被重启。</p>
+<h5 id="案例：liveness-httpget"><a href="#案例：liveness-httpget" class="headerlink" title="案例：liveness-httpget"></a>案例：liveness-httpget</h5><p>使用 Nginx 镜像，探测其 <code>/index.html</code> 是否存在：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">livenessProbe:</span></span><br><span class="line">  <span class="attr">httpGet:</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">  <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">periodSeconds:</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们把 index.html 移走后，探针失败，容器会被重启。</p>
+<h5 id="案例：liveness-tcp"><a href="#案例：liveness-tcp" class="headerlink" title="案例：liveness-tcp"></a>案例：liveness-tcp</h5><p>检测 Nginx 的 80 端口是否能连通：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">livenessProbe:</span></span><br><span class="line">  <span class="attr">tcpSocket:</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">  <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">periodSeconds:</span> <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p>如果我们关闭 Nginx 进程，TCP 连接失败，容器同样会重启。</p>
+<h5 id="案例：readiness-与-liveness-组合"><a href="#案例：readiness-与-liveness-组合" class="headerlink" title="案例：readiness 与 liveness 组合"></a>案例：readiness 与 liveness 组合</h5><p>一个 Pod 可以同时配置就绪探针和存活探针。通常，就绪探针用于控制流量接入，存活探针用于保证容器运行。两者探测路径、端口可以相同，但作用不同。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">livenessProbe:</span></span><br><span class="line">  <span class="attr">httpGet:</span></span><br><span class="line">    <span class="attr">port:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">  <span class="attr">initialDelaySeconds:</span> <span class="number">10</span></span><br><span class="line">  <span class="attr">periodSeconds:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">readinessProbe:</span></span><br><span class="line">  <span class="attr">httpGet:</span></span><br><span class="line">    <span class="attr">port:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">  <span class="attr">initialDelaySeconds:</span> <span class="number">10</span></span><br><span class="line">  <span class="attr">periodSeconds:</span> <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p>当 index.html 被移走时，就绪探针失败，Pod 状态变为 <code>0/1 Running</code>（未就绪），但容器不会重启；而存活探针失败则会触发重启。</p>
+<h4 id="钩子（Lifecycle-Hooks）"><a href="#钩子（Lifecycle-Hooks）" class="headerlink" title="钩子（Lifecycle Hooks）"></a>钩子（Lifecycle Hooks）</h4><p>我们可以在容器启动后和终止前执行一些自定义操作。</p>
+<ul>
+<li><strong>postStart</strong>：容器启动后立即执行，常用于初始化环境。</li>
+<li><strong>preStop</strong>：容器终止前执行，常用于优雅关闭或清理。</li>
+</ul>
+<p>示例：在 postStart 中创建目录：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">lifecycle:</span></span><br><span class="line">  <span class="attr">postStart:</span></span><br><span class="line">    <span class="attr">exec:</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;mkdir&quot;</span>, <span class="string">&quot;-p&quot;</span>, <span class="string">&quot;/usr/share/nginx/html/home&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>preStop 示例（让容器终止前等待很长时间，验证宽限期）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">lifecycle:</span></span><br><span class="line">  <span class="attr">preStop:</span></span><br><span class="line">    <span class="attr">exec:</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;sleep 60000000&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>当删除该 Pod 时，会发现它会在 Terminating 状态停留一段时间（默认宽限期 30 秒），这就是 preStop 在生效。</p>
+<hr>
+<h3 id="常见故障排查与状态解读"><a href="#常见故障排查与状态解读" class="headerlink" title="常见故障排查与状态解读"></a>常见故障排查与状态解读</h3><table>
+<thead>
+<tr>
+<th>Pod 状态</th>
+<th>含义与排查思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Pending</strong></td>
+<td>调度未完成或镜像拉取慢。检查 <code>kubectl describe pod</code> 查看事件，看是否因资源不足、节点污点、节点选择器不匹配等。</td>
+</tr>
+<tr>
+<td><strong>CrashLoopBackOff</strong></td>
+<td>容器反复启动又崩溃。使用 <code>kubectl logs &lt;pod&gt;</code> 查看容器日志，检查启动命令、依赖环境是否正确。</td>
+</tr>
+<tr>
+<td><strong>Running 但 0&#x2F;1 Ready</strong></td>
+<td>就绪探针失败，流量不会转发。检查 readinessProbe 配置的路径、端口是否正确。</td>
+</tr>
+<tr>
+<td><strong>Failed</strong></td>
+<td>容器退出码非 0。查看日志和退出码，通常是程序内部错误。</td>
+</tr>
+<tr>
+<td><strong>Unknown</strong></td>
+<td>API Server 与 kubelet 通信中断，检查节点网络或 kubelet 状态。</td>
+</tr>
+</tbody></table>
+<p>常用调试命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看 Pod 事件</span></span><br><span class="line">kubectl describe pod &lt;pod-name&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看日志</span></span><br><span class="line">kubectl logs &lt;pod-name&gt; [-c &lt;container-name&gt;]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入容器执行命令</span></span><br><span class="line">kubectl <span class="built_in">exec</span> -it &lt;pod-name&gt; -- /bin/sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实时跟踪日志</span></span><br><span class="line">kubectl logs -f &lt;pod-name&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="总结与最佳实践"><a href="#总结与最佳实践" class="headerlink" title="总结与最佳实践"></a>总结与最佳实践</h3><ul>
+<li><strong>调度策略</strong>：根据实际场景选择合适的调度方式。硬亲和（required）适合强制隔离，软亲和（preferred）适合弹性均衡。污点和容忍常用于专用节点（如 GPU 节点）或保护系统组件。</li>
+<li><strong>健康检查</strong>：必配！至少配置 livenessProbe 和 readinessProbe。liveness 保证容器不死，readiness 保证流量不误发。探测方式优先选择 HTTPGet 或 TCP，因为它们更贴近应用实际。</li>
+<li><strong>生命周期钩子</strong>：善用 postStart 做初始化，用 preStop 做优雅关闭，但注意 postStart 不能太耗时，否则会阻塞容器启动。</li>
+<li><strong>故障排查</strong>：永远从 <code>kubectl describe</code> 和 <code>kubectl logs</code> 开始，它们提供了 80% 的线索。</li>
+</ul>
+<p>掌握这些内容，你就能够从容应对 Kubernetes 中 Pod 的调度与运维了。实践出真知，建议你在自己的集群中逐一实验每个案例，观察 Pod 的行为变化，这会让你理解更加深刻。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2026/08/24/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E8%BF%9B%E9%98%B6/">http://example.com/2026/08/24/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E8%BF%9B%E9%98%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/26/%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1/" title="共享文件和目录服务"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">共享文件和目录服务</div></div><div class="info-2"><div class="info-item-1">Linux跨平台文件共享终极指南：NFS与Samba双剑合璧，从零到企业级自动化备份 云计算老兵手把手带你搭建Linux原生共享与Windows互通服务，附完整企业级备份方案   前言在企业IT运维中，文件共享是最高频的操作之一。开发团队需要共享安装包，运维团队需要集中管理配置文件，Windows桌面与Linux服务器之间需要交换数据——这些场景都离不开稳定高效的文件共享服务。 Linux生态中有两把“瑞士军刀”：  NFS（Network File System）：Linux&#x2F;Unix之间的“母语”，性能极高、配置极简，适合服务器集群内部大规模数据共享。 Samba：Linux与Windows之间的“翻译官”，让Linux服务器完美融入Windows网络环境，实现跨平台无缝协作。  本文基于 阿里云ECS 环境（CentOS Stream 9），从零开始搭建NFS和Samba服务，并延伸到综合企业级案例——将共享、日志集中、定时备份与实时同步整合成一套完整的自动化方案。每条命令都附有解释，每个参数都有拆解，每一步都有验证。读完这篇，你不仅能搭起来，更能理解其原理，遇到...</div></div></div></a><a class="pagination-related" href="/2026/08/23/Kubernetes%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8EPod%E5%9F%BA%E7%A1%80/" title="Kubernetes资源管理与Pod基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Kubernetes资源管理与Pod基础</div></div><div class="info-2"><div class="info-item-1">【了解】Node 节点管理Node是K8s集群的工作节点（包括 Master和Worker），管理Node是日常运维的基本功 查看帮助12kubectl --helpkubectl get --help  查看集群信息1kubectl cluster-info  查看节点信息12345678# 查看所有节点kubectl get nodes# 查看节点详细信息（IP、系统、内核版本等）kubectl get nodes -o wide# 查看某个节点的详细状态（常用于排错）kubectl describe node &lt;node-name&gt;  让 Node 节点也能执行 kubectl 命令默认情况下，只有 Master 节点配置了管理员凭证。如果希望在 Node 节点上也使用 kubectl，可以将 Master 上的 admin.conf 拷贝过去： 12345678# 在 Node 节点创建 .kube 目录mkdir /root/.kube# 在 Master 上执行拷贝scp /etc/kubernetes/admin.conf node1:/root/.ku...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">John Doe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Kubernetes-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E4%B8%8E-Pod-%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%BB%8E%E8%B0%83%E5%BA%A6%E5%88%B0%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%85%A8%E8%A7%A3%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">Kubernetes 资源管理与 Pod 进阶：从调度到生命周期全解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod-%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E5%88%9B%E5%BB%BA%E5%87%BA%E6%9D%A5%E7%9A%84%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">Pod 是如何被创建出来的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod-%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%EF%BC%9A%E8%AE%A9-Pod-%E5%8E%BB%E5%AE%83%E8%AF%A5%E5%8E%BB%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="toc-number">1.2.</span> <span class="toc-text">Pod 调度策略：让 Pod 去它该去的地方</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E5%90%91%E8%B0%83%E5%BA%A6%EF%BC%88%E5%BC%BA%E5%88%B6%E6%8C%87%E5%AE%9A%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">定向调度（强制指定）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-nodeName"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">使用 nodeName</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-nodeSelector"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">使用 nodeSelector</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%B2%E5%92%8C%E6%80%A7%E8%B0%83%E5%BA%A6%EF%BC%88%E6%9B%B4%E7%81%B5%E6%B4%BB%E7%9A%84%E9%80%89%E6%8B%A9%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">亲和性调度（更灵活的选择）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#NodeAffinity%EF%BC%88%E8%8A%82%E7%82%B9%E4%BA%B2%E5%92%8C%EF%BC%89"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">NodeAffinity（节点亲和）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#PodAffinity%EF%BC%88Pod-%E4%BA%B2%E5%92%8C%EF%BC%89"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">PodAffinity（Pod 亲和）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#PodAntiAffinity%EF%BC%88Pod-%E5%8F%8D%E4%BA%B2%E5%92%8C%EF%BC%89"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">PodAntiAffinity（Pod 反亲和）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B1%A1%E7%82%B9%EF%BC%88Taints%EF%BC%89%E4%B8%8E%E5%AE%B9%E5%BF%8D%EF%BC%88Toleration%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">污点（Taints）与容忍（Toleration）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod-%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5"><span class="toc-number">1.3.</span> <span class="toc-text">Pod 的生命周期与健康检查</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A6%82%E8%A7%88"><span class="toc-number">1.3.1.</span> <span class="toc-text">生命周期概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%8E%A2%E6%B5%8B%E6%96%B9%E5%BC%8F"><span class="toc-number">1.3.2.</span> <span class="toc-text">三种探测方式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9Aliveness-exec"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">案例：liveness-exec</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9Aliveness-httpget"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">案例：liveness-httpget</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9Aliveness-tcp"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">案例：liveness-tcp</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9Areadiness-%E4%B8%8E-liveness-%E7%BB%84%E5%90%88"><span class="toc-number">1.3.2.4.</span> <span class="toc-text">案例：readiness 与 liveness 组合</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%92%A9%E5%AD%90%EF%BC%88Lifecycle-Hooks%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">钩子（Lifecycle Hooks）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E4%B8%8E%E7%8A%B6%E6%80%81%E8%A7%A3%E8%AF%BB"><span class="toc-number">1.4.</span> <span class="toc-text">常见故障排查与状态解读</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.5.</span> <span class="toc-text">总结与最佳实践</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/03/%E6%B5%8B%E8%AF%95/" title="Untitled">Untitled</a><time datetime="2026-09-03T07:25:34.670Z" title="Created 2026-09-03 15:25:34">2026-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/01/%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8/" title="命令速查表">命令速查表</a><time datetime="2026-09-01T03:20:49.000Z" title="Created 2026-09-01 11:20:49">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/27/Nginx%E5%8D%95%E6%9C%BA%E9%83%A8%E7%BD%B2/" title="Nginx单机部署">Nginx单机部署</a><time datetime="2026-08-27T06:52:36.000Z" title="Created 2026-08-27 14:52:36">2026-08-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/26/DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/" title="DNS服务器">DNS服务器</a><time datetime="2026-08-26T07:31:50.000Z" title="Created 2026-08-26 15:31:50">2026-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/26/%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1/" title="共享文件和目录服务">共享文件和目录服务</a><time datetime="2026-08-26T06:20:25.000Z" title="Created 2026-08-26 14:20:25">2026-08-26</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
