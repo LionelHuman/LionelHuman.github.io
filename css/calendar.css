@@ -1,0 +1,134 @@
+/* ============================================================
+   Hexo 日历插件样式（{% calendar %}）
+   存放位置：blog/source/css/calendar.css
+   引入方式：_config.butterfly.yml → inject.head 里加一行
+             - <link rel="stylesheet" href="/css/calendar.css">
+
+   配色全部引用 Butterfly 主题的 CSS 变量，因此自动跟随主题色
+   与 [data-theme='dark'] 暗色模式；每个变量都带兜底值，
+   在其他主题下也不会失色。
+   主强调色兜底 #49B1F5 = Butterfly 默认 $bright-blue。
+   ============================================================ */
+
+.hexo-cal {
+  --cal-accent: #49B1F5;
+  --cal-line: var(--dark-grey, #e3e8ef);
+  border: 1px solid var(--cal-line);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1.2em 0;
+  background: var(--card-bg, #fff);
+  color: var(--font-color, #1F2D3D);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+               'Microsoft YaHei', sans-serif;
+}
+
+.hexo-cal__head {
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: 1px solid var(--cal-line);
+  background: var(--global-bg, #f6f8fa);
+  color: var(--text-highlight-color, inherit);
+}
+
+.hexo-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.hexo-cal__dow {
+  padding: 10px 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--light-grey, #8a9199);
+  border-bottom: 1px solid var(--cal-line);
+}
+
+.hexo-cal__dow.is-weekend {
+  color: var(--cal-accent);
+  opacity: .75;
+}
+
+.hexo-cal__cell {
+  position: relative;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-right: 1px solid var(--cal-line);
+  border-bottom: 1px solid var(--cal-line);
+  transition: background .18s ease;
+}
+
+/* 每行最后一格去掉右边框；最后一行去掉下边框 */
+.hexo-cal__grid > .hexo-cal__cell:nth-child(7n) {
+  border-right: none;
+}
+
+.hexo-cal__row:last-child .hexo-cal__cell {
+  border-bottom: none;
+}
+
+/* 跨月补齐的日期 */
+.hexo-cal__cell.is-out {
+  color: var(--light-grey, #c9d1d9);
+  opacity: .5;
+}
+
+.hexo-cal__cell.is-weekend {
+  opacity: .82;
+}
+
+/* 高亮日（默认=文章 date 那天，可用 highlight: 覆盖） */
+.hexo-cal__cell.is-now {
+  background: var(--cal-accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px var(--cal-accent) inset;
+}
+
+/* 今天（系统日期）的圆点标记 */
+.hexo-cal__cell.is-today::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cal-accent);
+}
+
+.hexo-cal__cell.is-now.is-today::after {
+  background: #fff;
+}
+
+/* 暗色模式：用 Butterfly 自己的 [data-theme='dark']，只需把强调色提亮 */
+[data-theme='dark'] .hexo-cal {
+  --cal-accent: #5fb8f7;
+}
+
+[data-theme='dark'] .hexo-cal__cell.is-now {
+  color: #10202e;
+}
+
+[data-theme='dark'] .hexo-cal__cell.is-now.is-today::after {
+  background: #10202e;
+}
+
+/* 小屏优化：格子紧凑一些 */
+@media (max-width: 480px) {
+  .hexo-cal__cell {
+    min-height: 38px;
+    font-size: 13px;
+  }
+  .hexo-cal__head {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
