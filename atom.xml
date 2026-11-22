@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>LionelHuman</name>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <icon>https://lionelhuman.github.io/img/favicon.ico</icon>
+  <id>https://lionelhuman.github.io/</id>
+  <link href="https://lionelhuman.github.io/" rel="alternate"/>
+  <link href="https://lionelhuman.github.io/atom.xml" rel="self"/>
+  <rights>All rights reserved 2026, LionelHuman</rights>
+  <subtitle>记录运维、编程与网络的学习笔记</subtitle>
+  <title>LionelHuman 的博客</title>
+  <updated>2026-11-22T12:12:58.113Z</updated>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="计算机网络" scheme="https://lionelhuman.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <category term="重学计算机网络：从CS168到真实踩坑" scheme="https://lionelhuman.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%87%8D%E5%AD%A6%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%9A%E4%BB%8ECS168%E5%88%B0%E7%9C%9F%E5%AE%9E%E8%B8%A9%E5%9D%91/"/>
+    <category term="计算机网络" scheme="https://lionelhuman.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <category term="CS168" scheme="https://lionelhuman.github.io/tags/CS168/"/>
+    <category term="网络编程" scheme="https://lionelhuman.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    <category term="Python" scheme="https://lionelhuman.github.io/tags/Python/"/>
+    <id>https://lionelhuman.github.io/2026/10/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/cs168-network-crash/</id>
+    <link href="https://lionelhuman.github.io/2026/10/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/cs168-network-crash/"/>
+    <published>2026-10-21T07:53:07.000Z</published>
+    <summary>
+      <![CDATA[<p>很多刚学编程的朋友，一碰到“网络”两个字就头皮发麻。去网上一搜，全是什么“OSI七层模型”、“TCP三次握手”、“子网掩码”</p>
+<p>背得死去活来，结果真让你写个代码抓个包，脑子一片空白。其实，你要是去问那些写了十几年代码的老手，他们大概率也背不全那些概念</p>
+<]]>
+    </summary>
+    <title>代码在本地跑得飞快，为什么一联网就崩溃？</title>
+    <updated>2026-11-22T12:12:58.113Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="计算机网络" scheme="https://lionelhuman.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <category term="计算机网络" scheme="https://lionelhuman.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <category term="TCP/IP协议" scheme="https://lionelhuman.github.io/tags/TCP-IP%E5%8D%8F%E8%AE%AE/"/>
+    <id>https://lionelhuman.github.io/2026/10/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-IP%E5%8D%8F%E8%AE%AE/</id>
+    <link href="https://lionelhuman.github.io/2026/10/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-IP%E5%8D%8F%E8%AE%AE/"/>
+    <published>2026-10-07T07:23:57.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="聊透-TCP-IP：从一次断网排查，看懂网络世界是怎么运转的"><a href="#聊透-TCP-IP：从一次断网排查，看懂网络世界是怎么运转的" class="headerlink" title="聊透]]>
+    </summary>
+    <title>TCP/IP协议</title>
+    <updated>2026-10-07T08:52:23.227Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="闭包" scheme="https://lionelhuman.github.io/tags/%E9%97%AD%E5%8C%85/"/>
+    <id>https://lionelhuman.github.io/2026/10/05/Swift/%E9%97%AD%E5%8C%85/</id>
+    <link href="https://lionelhuman.github.io/2026/10/05/Swift/%E9%97%AD%E5%8C%85/"/>
+    <published>2026-10-05T10:18:10.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-闭包：从一脸懵到真香，你只需要搞懂这三个阶段"><a href="#Swift-闭包：从一脸懵到真香，你只需要搞懂这三个阶段" class="headerlink" title="Swift]]>
+    </summary>
+    <title>闭包</title>
+    <updated>2026-11-22T12:13:25.567Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="函数" scheme="https://lionelhuman.github.io/tags/%E5%87%BD%E6%95%B0/"/>
+    <id>https://lionelhuman.github.io/2026/10/05/Swift/%E5%87%BD%E6%95%B0/</id>
+    <link href="https://lionelhuman.github.io/2026/10/05/Swift/%E5%87%BD%E6%95%B0/"/>
+    <published>2026-10-05T07:33:51.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-函数：写代码不是复制粘贴，这几个细节你得搞明白"><a href="#Swift-函数：写代码不是复制粘贴，这几个细节你得搞明白" class="headerlink" title="Swift]]>
+    </summary>
+    <title>函数</title>
+    <updated>2026-11-22T11:56:20.268Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="控制流" scheme="https://lionelhuman.github.io/tags/%E6%8E%A7%E5%88%B6%E6%B5%81/"/>
+    <id>https://lionelhuman.github.io/2026/10/05/Swift/%E6%8E%A7%E5%88%B6%E6%B5%81/</id>
+    <link href="https://lionelhuman.github.io/2026/10/05/Swift/%E6%8E%A7%E5%88%B6%E6%B5%81/"/>
+    <published>2026-10-05T06:50:43.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-控制流：别让-if-else-堆砌成山，掌握这几种姿势就够了"><a href="#Swift-控制流：别让-if-else-堆砌成山，掌握这几种姿势就够了" class="headerlink" title="Swift 控制流：别让]]>
+    </summary>
+    <title>控制流</title>
+    <updated>2026-11-22T12:13:25.567Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="集合类型" scheme="https://lionelhuman.github.io/tags/%E9%9B%86%E5%90%88%E7%B1%BB%E5%9E%8B/"/>
+    <id>https://lionelhuman.github.io/2026/10/05/Swift/%E9%9B%86%E5%90%88%E7%B1%BB%E5%9E%8B/</id>
+    <link href="https://lionelhuman.github.io/2026/10/05/Swift/%E9%9B%86%E5%90%88%E7%B1%BB%E5%9E%8B/"/>
+    <published>2026-10-05T05:47:55.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-集合类型：数组、集合和字典，到底该选哪个？"><a href="#Swift-集合类型：数组、集合和字典，到底该选哪个？" class="headerlink" title="Swift]]>
+    </summary>
+    <title>集合类型</title>
+    <updated>2026-10-05T07:11:53.473Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="字符串" scheme="https://lionelhuman.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    <id>https://lionelhuman.github.io/2026/10/05/Swift/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E5%AD%97%E7%AC%A6/</id>
+    <link href="https://lionelhuman.github.io/2026/10/05/Swift/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E5%AD%97%E7%AC%A6/"/>
+    <published>2026-10-05T03:39:36.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-字符串与字符：从“看起来简单”到“编译器教你做人”"><a href="#Swift-字符串与字符：从“看起来简单”到“编译器教你做人”" class="headerlink" title="Swift]]>
+    </summary>
+    <title>字符串和字符</title>
+    <updated>2026-11-22T11:56:20.280Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="运算符" scheme="https://lionelhuman.github.io/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/"/>
+    <id>https://lionelhuman.github.io/2026/10/05/Swift/%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E7%AC%A6/</id>
+    <link href="https://lionelhuman.github.io/2026/10/05/Swift/%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E7%AC%A6/"/>
+    <published>2026-10-05T02:12:11.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-基本运算符：那些年新手必踩的坑，和必须搞懂的细节"><a href="#Swift-基本运算符：那些年新手必踩的坑，和必须搞懂的细节" class="headerlink" title="Swift]]>
+    </summary>
+    <title>基本运算符</title>
+    <updated>2026-10-05T05:26:26.767Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="Swift" scheme="https://lionelhuman.github.io/categories/Swift/"/>
+    <category term="Swift基础" scheme="https://lionelhuman.github.io/tags/Swift%E5%9F%BA%E7%A1%80/"/>
+    <category term="The Basics" scheme="https://lionelhuman.github.io/tags/The-Basics/"/>
+    <id>https://lionelhuman.github.io/2026/10/04/Swift/Swift/</id>
+    <link href="https://lionelhuman.github.io/2026/10/04/Swift/Swift/"/>
+    <published>2026-10-04T10:07:45.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="Swift-基础不“基础”：从-The-Basics-开始，把安全写进代码里"><a href="#Swift-基础不“基础”：从-The-Basics-开始，把安全写进代码里" class="headerlink" title="Swift 基础不“基础”：从]]>
+    </summary>
+    <title>Swift 基础不“基础”：从 The Basics 开始，把安全写进代码里</title>
+    <updated>2026-10-05T02:59:59.541Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="Kubernetes" scheme="https://lionelhuman.github.io/tags/Kubernetes/"/>
+    <category term="Ingress" scheme="https://lionelhuman.github.io/tags/Ingress/"/>
+    <category term="Traefik" scheme="https://lionelhuman.github.io/tags/Traefik/"/>
+    <id>https://lionelhuman.github.io/2026/10/03/%E8%BF%90%E7%BB%B4/Ingress%E5%B7%A5%E5%85%B7%E4%B8%8ETraefik%E5%B7%A5%E5%85%B7/</id>
+    <link href="https://lionelhuman.github.io/2026/10/03/%E8%BF%90%E7%BB%B4/Ingress%E5%B7%A5%E5%85%B7%E4%B8%8ETraefik%E5%B7%A5%E5%85%B7/"/>
+    <published>2026-10-03T03:11:29.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="写在前面：为什么这篇博客值得你读完"><a href="#写在前面：为什么这篇博客值得你读完" class="headerlink" title="写在前面：为什么这篇博客值得你读完"></a>写在前面：为什么这篇博客值得你读完</h2><p>如果你正在用]]>
+    </summary>
+    <title>Ingress工具与Traefik工具</title>
+    <updated>2026-11-22T08:29:44.923Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="Kubernetes" scheme="https://lionelhuman.github.io/tags/Kubernetes/"/>
+    <category term="Service" scheme="https://lionelhuman.github.io/tags/Service/"/>
+    <id>https://lionelhuman.github.io/2026/10/01/%E8%BF%90%E7%BB%B4/Controller%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%8EService%E6%9C%8D%E5%8A%A1/</id>
+    <link href="https://lionelhuman.github.io/2026/10/01/%E8%BF%90%E7%BB%B4/Controller%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%8EService%E6%9C%8D%E5%8A%A1/"/>
+    <published>2026-10-01T07:45:00.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="从零开始精通-Kubernetes：控制器与-Service-深度解析"><a href="#从零开始精通-Kubernetes：控制器与-Service-深度解析" class="headerlink" title="从零开始精通]]>
+    </summary>
+    <title>Controller控制器与Service服务</title>
+    <updated>2026-11-22T12:13:00.793Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="运维" scheme="https://lionelhuman.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="HDFS" scheme="https://lionelhuman.github.io/tags/HDFS/"/>
+    <id>https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-05/</id>
+    <link href="https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-05/"/>
+    <published>2026-09-24T03:00:00.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="datanode的节点上下架"><a href="#datanode的节点上下架" class="headerlink"]]>
+    </summary>
+    <title>《大数据运维》05 - DataNode 动态上下架</title>
+    <updated>2026-11-22T12:21:05.336Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="运维" scheme="https://lionelhuman.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="Hadoop" scheme="https://lionelhuman.github.io/tags/Hadoop/"/>
+    <category term="HDFS" scheme="https://lionelhuman.github.io/tags/HDFS/"/>
+    <category term="YARN" scheme="https://lionelhuman.github.io/tags/YARN/"/>
+    <id>https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-04/</id>
+    <link href="https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-04/"/>
+    <published>2026-09-24T02:40:00.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="搭建-Hadoop-高可用（HA）集群"><a href="#搭建-Hadoop-高可用（HA）集群" class="headerlink" title="搭建 Hadoop 高可用（HA）集群"></a>搭建 Hadoop]]>
+    </summary>
+    <title>《大数据运维》04 - Hadoop 高可用（HA）集群搭建</title>
+    <updated>2026-11-22T12:21:05.336Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="Linux" scheme="https://lionelhuman.github.io/tags/Linux/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="运维" scheme="https://lionelhuman.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="ZooKeeper" scheme="https://lionelhuman.github.io/tags/ZooKeeper/"/>
+    <id>https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-03/</id>
+    <link href="https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-03/"/>
+    <published>2026-09-24T02:20:00.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="集群角色规划"><a href="#集群角色规划" class="headerlink" title="集群角色规划"></a>集群角色规划</h2><img]]>
+    </summary>
+    <title>《大数据运维》03 - 环境准备与 ZooKeeper 集群搭建</title>
+    <updated>2026-11-22T12:21:08.936Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="运维" scheme="https://lionelhuman.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="Hadoop" scheme="https://lionelhuman.github.io/tags/Hadoop/"/>
+    <id>https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-02/</id>
+    <link href="https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-02/"/>
+    <published>2026-09-24T02:00:00.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="离线平台环境搭建-开源版"><a href="#离线平台环境搭建-开源版" class="headerlink" title="离线平台环境搭建(开源版)"></a>离线平台环境搭建(开源版)</h2><p>以其中的大数据项目的架构为例:</p>
+<img]]>
+    </summary>
+    <title>《大数据运维》02 - 离线平台架构与 Hadoop 核心原理</title>
+    <updated>2026-11-22T12:21:05.336Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="运维" scheme="https://lionelhuman.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="技术栈" scheme="https://lionelhuman.github.io/tags/%E6%8A%80%E6%9C%AF%E6%A0%88/"/>
+    <id>https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-01/</id>
+    <link href="https://lionelhuman.github.io/2026/09/24/%E8%BF%90%E7%BB%B4/bigdata-ops-01/"/>
+    <published>2026-09-24T01:42:39.000Z</published>
+    <summary>
+      <![CDATA[<p>很多新手一听到“大数据运维”，脑子里立刻浮现出成排的服务器和密密麻麻的代码，觉得特别高深</p>
+<p>其实，再复杂的系统，也是由一个个基础概念拼装起来的今天，咱们就结合真实场景，从零开始，把大数据运维这条路给你铺平</p>
+<h2]]>
+    </summary>
+    <title>《大数据运维》01 - 什么是大数据运维与核心技术栈</title>
+    <updated>2026-11-22T12:21:05.335Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="计算机网络" scheme="https://lionelhuman.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <category term="计算机网络" scheme="https://lionelhuman.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <id>https://lionelhuman.github.io/2026/09/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</id>
+    <link href="https://lionelhuman.github.io/2026/09/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    <published>2026-09-23T08:20:55.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="计算机网络从一根网线到整个互联网"><a href="#计算机网络从一根网线到整个互联网" class="headerlink" title="计算机网络从一根网线到整个互联网"></a>计算机网络从一根网线到整个互联网</h2><h3]]>
+    </summary>
+    <title>计算机网络</title>
+    <updated>2026-10-07T07:22:50.601Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="https://lionelhuman.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="Hadoop" scheme="https://lionelhuman.github.io/tags/Hadoop/"/>
+    <category term="集群" scheme="https://lionelhuman.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <id>https://lionelhuman.github.io/2026/09/23/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E7%BB%9F%E4%B8%80/</id>
+    <link href="https://lionelhuman.github.io/2026/09/23/%E8%BF%90%E7%BB%B4/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E7%BB%9F%E4%B8%80/"/>
+    <published>2026-09-23T05:56:12.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="虚拟机克隆与资源分配：赢在起跑线"><a href="#虚拟机克隆与资源分配：赢在起跑线" class="headerlink"]]>
+    </summary>
+    <title>大数据环境配置统一</title>
+    <updated>2026-11-22T08:29:44.931Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="MySQL" scheme="https://lionelhuman.github.io/tags/MySQL/"/>
+    <category term="数据库" scheme="https://lionelhuman.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    <id>https://lionelhuman.github.io/2026/09/23/%E8%BF%90%E7%BB%B4/MySQL%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/</id>
+    <link href="https://lionelhuman.github.io/2026/09/23/%E8%BF%90%E7%BB%B4/MySQL%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/"/>
+    <published>2026-09-23T04:56:50.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink"]]>
+    </summary>
+    <title>MySQL数据服务管理</title>
+    <updated>2026-11-22T08:31:56.282Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>LionelHuman</name>
+    </author>
+    <category term="运维" scheme="https://lionelhuman.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    <category term="MySQL" scheme="https://lionelhuman.github.io/tags/MySQL/"/>
+    <category term="数据库" scheme="https://lionelhuman.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    <id>https://lionelhuman.github.io/2026/09/22/%E8%BF%90%E7%BB%B4/MySQL8%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</id>
+    <link href="https://lionelhuman.github.io/2026/09/22/%E8%BF%90%E7%BB%B4/MySQL8%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/"/>
+    <published>2026-09-22T07:01:01.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="MySQL-8-0-从零到一：CentOS-Stream-9-二进制安装、脚本封装与多实例实战"><a href="#MySQL-8-0-从零到一：CentOS-Stream-9-二进制安装、脚本封装与多实例实战" class="headerlink"]]>
+    </summary>
+    <title>MySQL8安装与配置</title>
+    <updated>2026-11-22T12:12:58.112Z</updated>
+  </entry>
+</feed>
