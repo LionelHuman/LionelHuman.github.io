@@ -1,31 +1,33 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Prometheus监控系统 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Prometheus作用：能够基于Prometheus+Grafana搭建企业级监控系统，实现系统层面监控与数据库层面监控。 什么是Prometheus？Prometheus(普罗米修斯)是一套开源的监控&amp;报警&amp;时间序列数据库的组合, 由go语言开发。适合监控容器平台, 因为Kubernetes(俗称k8s)的流行带动了Prometheus的发展。 官网：Prometheus -">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Prometheus监控系统 | LionelHuman 的博客</title><meta name="author" content="LionelHuman"><meta name="copyright" content="LionelHuman"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Prometheus作用：能够基于Prometheus+Grafana搭建企业级监控系统，实现系统层面监控与数据库层面监控。 什么是Prometheus？Prometheus(普罗米修斯)是一套开源的监控&amp;报警&amp;时间序列数据库的组合, 由go语言开发。适合监控容器平台, 因为Kubernetes(俗称k8s)的流行带动了Prometheus的发展。 官网：Prometheus -">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Prometheus监控系统">
-<meta property="og:url" content="http://example.com/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:url" content="https://lionelhuman.github.io/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="LionelHuman 的博客">
 <meta property="og:description" content="Prometheus作用：能够基于Prometheus+Grafana搭建企业级监控系统，实现系统层面监控与数据库层面监控。 什么是Prometheus？Prometheus(普罗米修斯)是一套开源的监控&amp;报警&amp;时间序列数据库的组合, 由go语言开发。适合监控容器平台, 因为Kubernetes(俗称k8s)的流行带动了Prometheus的发展。 官网：Prometheus -">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lionelhuman.github.io/img/butterfly-icon.png">
 <meta property="article:published_time" content="2026-08-09T03:29:59.000Z">
-<meta property="article:modified_time" content="2026-09-08T12:32:18.627Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-11-22T08:34:04.458Z">
+<meta property="article:author" content="LionelHuman">
+<meta property="article:tag" content="Prometheus">
+<meta property="article:tag" content="监控">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+<meta name="twitter:image" content="https://lionelhuman.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Prometheus监控系统",
-  "url": "http://example.com/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/",
-  "image": "http://example.com/img/butterfly-icon.png",
+  "url": "https://lionelhuman.github.io/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/",
+  "image": "https://lionelhuman.github.io/img/butterfly-icon.png",
   "datePublished": "2026-08-09T03:29:59.000Z",
-  "dateModified": "2026-09-08T12:32:18.627Z",
+  "dateModified": "2026-11-22T08:34:04.458Z",
   "author": [
     {
       "@type": "Person",
-      "name": "John Doe",
+      "name": "LionelHuman",
       "url": "https://github.com/LionelHuman"
     }
   ]
-}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lionelhuman.github.io/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
     (() => {
       
     const saveToLocal = {
@@ -164,9 +166,9 @@
   translate: undefined,
   highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
   copy: {
-    success: 'Copy Successful',
-    error: 'Copy Failed',
-    noSupport: 'Browser Not Supported'
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
   },
   relativeDate: {
     homepage: false,
@@ -174,18 +176,18 @@
   },
   runtime: '',
   dateSuffix: {
-    just: 'Just now',
-    min: 'minutes ago',
-    hour: 'hours ago',
-    day: 'days ago',
-    month: 'months ago'
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
   },
   copyright: undefined,
   lightbox: 'null',
   Snackbar: undefined,
   infinitegrid: {
     js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
-    buttonText: 'Load More'
+    buttonText: '加载更多'
   },
   isPhotoFigcaption: false,
   islazyloadPlugin: false,
@@ -200,7 +202,7 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/calendar.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+}</script><link rel="stylesheet" href="/css/calendar.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
   const $loadingBox = document.getElementById('loading-box')
   const $body = document.body
   const preloader = {
@@ -230,7 +232,7 @@
     btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
     btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
   }
-})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw far fa-calendar-alt"></i><span> 日历</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">Prometheus监控系统</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw far fa-calendar-alt"></i><span> 日历</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Prometheus监控系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-08-09T03:29:59.000Z" title="Created 2026-08-09 11:29:59">2026-08-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-09-08T12:32:18.627Z" title="Updated 2026-09-08 20:32:18">2026-09-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="Prometheus"><a href="#Prometheus" class="headerlink" title="Prometheus"></a><strong>Prometheus</strong></h2><p>作用：能够基于Prometheus+Grafana搭建企业级监控系统，实现系统层面监控与数据库层面监控。</p>
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">36</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">54</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/java/"><i class="fa-fw fab fa-java"></i><span> Java</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw far fa-calendar-alt"></i><span> 日历</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">LionelHuman 的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Prometheus监控系统</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/java/"><i class="fa-fw fab fa-java"></i><span> Java</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw far fa-calendar-alt"></i><span> 日历</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Prometheus监控系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-09T03:29:59.000Z" title="发表于 2026-08-09 11:29:59">2026-08-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-22T08:34:04.458Z" title="更新于 2026-11-22 16:34:04">2026-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="Prometheus"><a href="#Prometheus" class="headerlink" title="Prometheus"></a><strong>Prometheus</strong></h2><p>作用：能够基于Prometheus+Grafana搭建企业级监控系统，实现系统层面监控与数据库层面监控。</p>
 <h3 id="什么是Prometheus？"><a href="#什么是Prometheus？" class="headerlink" title="什么是Prometheus？"></a>什么是Prometheus？</h3><p>Prometheus(普罗米修斯)是一套开源的监控&amp;报警&amp;时间序列数据库的组合, 由go语言开发。适合监控容器平台, 因为Kubernetes(俗称k8s)的流行带动了Prometheus的发展。</p>
 <p>官网：<a target="_blank" rel="noopener" href="https://prometheus.io/">Prometheus - Monitoring system &amp; time series database</a></p>
 <img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/001_Prometheus%E5%AE%98%E7%BD%91.png" class="">
@@ -399,7 +401,7 @@
 <p>第一步：解压Prometheus压缩包</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">tar xf prometheus-2.51.2.linux-amd64.tar.gz -C /usr/local/</span><br><span class="line"><span class="built_in">mv</span> /usr/local/prometheus-2.51.2.linux-amd64/ /usr/local/prometheus</span><br><span class="line">配置文件说明：</span><br><span class="line">egrep -n : /usr/local/prometheus/prometheus.yml | awk -F<span class="string">&#x27;#&#x27;</span> <span class="string">&#x27;&#123;print $1&#125;&#x27;</span></span><br><span class="line">2:global:															  全局配置段</span><br><span class="line">3:  scrape_interval:   15s								每15s抓取(采集)数据一次</span><br><span class="line">4:  evaluation_interval: 15s					    每15秒计算一次规则</span><br><span class="line">8:alerting:															 Alertmanager报警相关</span><br><span class="line">9:  alertmanagers:</span><br><span class="line">10:  - static_configs:</span><br><span class="line">11:   - targets:</span><br><span class="line">12:</span><br><span class="line">15:rule_files:													   规则文件列表</span><br><span class="line">19:</span><br><span class="line">21:scrape_configs:										   抓取的配置文件(也就是监控的实例)</span><br><span class="line">23:  - job_name: <span class="string">&#x27;prometheus&#x27;</span>				   监控的实例名称</span><br><span class="line">28:   static_configs:</span><br><span class="line">29:   - targets: [<span class="string">&#x27;192.168.88.101:9090&#x27;</span>]	监控的实例IP与端口,在这里为监控服务器本身</span><br></pre></td></tr></table></figure>
 
-<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/004_%E8%A7%A3%E5%8E%8BPrometheus%E5%8E%8B%E7%BC%A9%E5%8C%85.png" class="">
+<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/004_%E8%A7%A3%E5%8E%8BPrometheus%E5%8E%8B%E7%BC%A9%E5%8C%85.jpg" class="">
 
 <p>第二步：直接使用默认配置文件启动, 建议加 &amp; 后台符号</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nohup</span> /usr/local/prometheus/prometheus --config.file=<span class="string">&quot;/usr/local/prometheus/prometheus.yml&quot;</span>&amp;</span><br><span class="line"><span class="built_in">jobs</span></span><br></pre></td></tr></table></figure>
@@ -422,7 +424,7 @@
 <img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/007_Prometheus%E7%9B%91%E6%8E%A7%E6%9C%AC%E6%9C%BA.png" class="">
 
 <p>③ 通过 http:&#x2F;&#x2F;服务器IP:9090&#x2F;metrics 可以查看到监控的数据</p>
-<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/008_metrics%E5%8F%AF%E4%BB%A5%E6%9F%A5%E7%9C%8B%E5%88%B0%E7%9B%91%E6%8E%A7%E7%9A%84%E6%95%B0%E6%8D%AE.png" class="">
+<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/008_metrics%E5%8F%AF%E4%BB%A5%E6%9F%A5%E7%9C%8B%E5%88%B0%E7%9B%91%E6%8E%A7%E7%9A%84%E6%95%B0%E6%8D%AE.jpg" class="">
 
 <p>④ 在web主界面可以通过关键字查询metrics, 并显示图形</p>
 <img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/009_%E5%9B%BE%E5%BD%A2%E5%8C%96%E6%95%B0%E6%8D%AE.png" class="">
@@ -440,14 +442,14 @@
 <h4 id="验证9100端口"><a href="#验证9100端口" class="headerlink" title="验证9100端口"></a>验证9100端口</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -tunlp |grep 9100</span><br><span class="line"><span class="comment"># tcp6   0  0 :::9100     :::*      LISTEN    74755/node_exporter</span></span><br></pre></td></tr></table></figure>
 
 <p>nohup命令: 如果把启动node_exporter的终端给关闭,那么进程也可能会随之关闭。nohup命令可以挂起在后台，除非杀掉相关进程，否则不会随终端关闭而关闭进程。</p>
-<h4 id="在被监控端收集metrics"><a href="#在被监控端收集metrics" class="headerlink" title="在被监控端收集metrics"></a>在被监控端收集metrics</h4><img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/010_%E5%AE%89%E8%A3%85node_exporter.png" class="">
+<h4 id="在被监控端收集metrics"><a href="#在被监控端收集metrics" class="headerlink" title="在被监控端收集metrics"></a>在被监控端收集metrics</h4><img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/010_%E5%AE%89%E8%A3%85node_exporter.jpg" class="">
 
 <h4 id="修改Prometheus配置文件"><a href="#修改Prometheus配置文件" class="headerlink" title="修改Prometheus配置文件"></a>修改Prometheus配置文件</h4><p>说明：其它都不变,只添加了最后3行配置，注意YAML格式要求。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">egrep -n : /usr/local/prometheus/prometheus.yml | awk -F<span class="string">&#x27;#&#x27;</span> <span class="string">&#x27;&#123;print $1&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">2:global:</span><br><span class="line">3:  scrape_interval: 15s </span><br><span class="line">4:  evaluation_interval: 15s </span><br><span class="line">8:alerting:</span><br><span class="line">9:  alertmanagers:</span><br><span class="line">10:    - static_configs:</span><br><span class="line">11:        - targets:</span><br><span class="line">12:          </span><br><span class="line">15:rule_files:</span><br><span class="line">19:</span><br><span class="line">21:scrape_configs:</span><br><span class="line">23:  - job_name: &quot;prometheus&quot;</span><br><span class="line">28:    static_configs:</span><br><span class="line">29:      - targets: [&quot;localhost:9090&quot;]</span><br><span class="line">30:  - job_name: &#x27;agent1&#x27;                   # 最后加上这三行，取一个job名称来代表被监控的机器</span><br><span class="line">31:    static_configs:</span><br><span class="line">32:    - targets: [&#x27;172.22.208.2:9100&#x27;]     # 这里改成被监控机器的IP，后面端口接9100</span><br><span class="line">[root@server ~]# </span><br></pre></td></tr></table></figure>
 
-<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/011_%E4%BF%AE%E6%94%B9Prometheus%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.png" class="">
+<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/011_%E4%BF%AE%E6%94%B9Prometheus%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.jpg" class="">
 
 <blockquote>
 <p>注意事项：YAML比传统配置文件更加严格，不能使用Tab键进行缩进。尽量保持同级内容，缩进相同，缩进只能通过Space空格实现，在YAML文件中，-代表列表，其后面必须保留一个空格，:右边也可以保留一个空格。否则语法都会报错。</p>
@@ -501,7 +503,7 @@
 <p>因为数据库通常需要账号和密码访问，首先建立监控之前，我们必须先创建授权账号，允许exporter组件采集MySQL信息</p>
 <h2 id="Grafana数据可视化"><a href="#Grafana数据可视化" class="headerlink" title="Grafana数据可视化**"></a>Grafana数据可视化**</h2><p>作用：把Prometheus采集到的系统信息、应用信息（MySQL）通过图形化方式进行数据呈现。</p>
 <h3 id="Grafana介绍"><a href="#Grafana介绍" class="headerlink" title="Grafana介绍"></a>Grafana介绍</h3><p>Grafana是一个开源的度量分析和可视化工具，可以通过将采集的数据分析，查询，然后进行可视化的展示,并能实现报警。</p>
-<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/014_Grafana%E5%AE%98%E7%BD%91.png" class="">
+<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/014_Grafana%E5%AE%98%E7%BD%91.jpg" class="">
 
 <p>官方网址: <a target="_blank" rel="noopener" href="https://grafana.com/">https://grafana.com/</a></p>
 <h3 id="Grafana安装与登录"><a href="#Grafana安装与登录" class="headerlink" title="Grafana安装与登录"></a>Grafana安装与登录</h3><p>在grafana服务器上安装grafana</p>
@@ -516,12 +518,12 @@
 <p>第三步：验证端口</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -ntlup |grep :3000</span><br><span class="line"><span class="comment"># tcp6  0  0 :::3000      :::*      LISTEN    60845/grafana-server</span></span><br></pre></td></tr></table></figure>
 
-<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/015_%E5%AE%89%E8%A3%85Grafana.png" class="">
+<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/015_%E5%AE%89%E8%A3%85Grafana.jpg" class="">
 
 <p>第四步：通过浏览器访问 <a target="_blank" rel="noopener" href="http://`grafana服务器ip`:3000/">http://grafana服务器IP:3000</a> 登录,使用默认的admin用户,admin密码就可以登陆了</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://47.112.201.107:3000/</span><br></pre></td></tr></table></figure>
 
-<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/016_Grafana%E7%99%BB%E5%BD%95.png" class="">
+<img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/016_Grafana%E7%99%BB%E5%BD%95.jpg" class="">
 
 <h3 id="设置prometheus为grafana数据源"><a href="#设置prometheus为grafana数据源" class="headerlink" title="设置prometheus为grafana数据源"></a>设置prometheus为grafana数据源</h3><p>把prometheus服务器收集的数据做为数据源添加到grafana，让grafana可以得到prometheus的数据。</p>
 <img src="/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/017_%E8%AE%BE%E7%BD%AEprometheus%E4%B8%BAgrafana%E6%95%B0%E6%8D%AE%E6%BA%90.png" class="">
@@ -538,20 +540,28 @@
 <p>把Prometheus作为Grafana数据源。</p>
 <p>侧重点：名称 + IP地址 + 请求</p>
 <h3 id="Grafana实现自定义监控CPU负载"><a href="#Grafana实现自定义监控CPU负载" class="headerlink" title="Grafana实现自定义监控CPU负载"></a>Grafana实现自定义监控CPU负载</h3><p>为添加好的数据源做图形显示</p>
-<p><img src="/images/wps21.jpg" alt="img"> </p>
-<p><img src="/images/wps22.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps21.jpg --> 
+
+<!-- 图片缺失：原路径 images/wps22.jpg --> 
+
 <p>① 添加cpu 1分钟负载</p>
-<p><img src="/images/wps23.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps23.jpg --> 
+
 <p>② 添加cpu 5分钟负载</p>
-<p><img src="/images/wps24.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps24.jpg --> 
+
 <p>③ 添加cpu 15分钟负载</p>
-<p><img src="/images/wps25.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps25.jpg --> 
+
 <p>添加Run query</p>
-<p><img src="/images/wps26.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps26.jpg --> 
+
 <p>匹配条件显示</p>
-<p><img src="/images/wps27.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps27.jpg --> 
+
 <p>模板另存为</p>
-<p><img src="/images/wps28.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps28.jpg --> 
+
 <p>以上设置完成后，我们还可以通过stress-ng压测工具对平台负载进行测试</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dnf install stress-ng --cpu 4 --<span class="built_in">timeout</span> 60s</span><br><span class="line">stress-ng --cpu 4 --<span class="built_in">timeout</span> 60s</span><br></pre></td></tr></table></figure>
 
@@ -571,28 +581,43 @@
 
 
 
-<p>第二种方案：在grafana图形界面搜索要导入的模板<img src="/images/wps29.jpg" alt="img"></p>
-<p><img src="/images/wps30.jpg" alt="img"> </p>
+<p>第二种方案：在grafana图形界面搜索要导入的模板<!-- 图片缺失：原路径 images/wps29.jpg --></p>
+<!-- 图片缺失：原路径 images/wps30.jpg --> 
+
 <p>搜索需要使用的json模板</p>
 <p>Prometheus模板：</p>
-<p><img src="/images/wps31.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps31.jpg --> 
+
 <p>下载Prometheus模板</p>
-<p><img src="/images/wps32.jpg" alt="img"> </p>
-<p><img src="/images/wps33.jpg" alt="img"> </p>
-<p><img src="/images/wps34.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps32.jpg --> 
+
+<!-- 图片缺失：原路径 images/wps33.jpg --> 
+
+<!-- 图片缺失：原路径 images/wps34.jpg --> 
+
 <p>点击Load</p>
-<p><img src="/images/wps35.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps35.jpg --> 
+
 <p>运行效果：</p>
-<p><img src="/images/wps36.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps36.jpg --> 
+
+
+
 <p>MySQL模板：</p>
-<p><img src="/images/wps37.jpg" alt="img"> </p>
-<p><img src="/images/wps38.jpg" alt="img"> </p>
-<p><img src="/images/wps39.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps37.jpg --> 
+
+<!-- 图片缺失：原路径 images/wps38.jpg --> 
+
+<!-- 图片缺失：原路径 images/wps39.jpg --> 
+
 <p>运行效果：</p>
-<p><img src="/images/wps40.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps40.jpg --> 
+
 <h2 id="开放式作业"><a href="#开放式作业" class="headerlink" title="开放式作业"></a>开放式作业</h2><p>把Nginx纳入Prometheus监控中，方式不限 &#x3D;&gt; 尝试使用Typora写成MarkDown格式笔记！</p>
-<h2 id="PromQL语言扩展"><a href="#PromQL语言扩展" class="headerlink" title="PromQL语言扩展"></a>PromQL语言扩展</h2><h3 id="PromQL概述"><a href="#PromQL概述" class="headerlink" title="PromQL概述"></a>PromQL概述</h3><p><img src="/images/image-20250218091453459.png" alt="image-20250218091453459"></p>
-<p><img src="/images/image-20250218091604614.png" alt="image-20250218091604614"></p>
+<h2 id="PromQL语言扩展"><a href="#PromQL语言扩展" class="headerlink" title="PromQL语言扩展"></a>PromQL语言扩展</h2><h3 id="PromQL概述"><a href="#PromQL概述" class="headerlink" title="PromQL概述"></a>PromQL概述</h3><!-- 图片缺失：原路径 images/image-20250218091453459.png -->
+
+<!-- 图片缺失：原路径 images/image-20250218091604614.png -->
+
 <p>PromQL（Prometheus Query Language）是 Prometheus 内置的数据查询语言，它能实现对事件序列数据的查询、聚合、逻辑运算等。它并且被广泛应用在 Prometheus 的日常应用当中，包括对数据查询、可视化、告警处理当中。</p>
 <p>简单地说，PromQL 广泛存在于以 Prometheus 为核心的监控体系中。所以需要用到数据筛选的地方，就会用到 PromQL。例如：监控指标的设置、报警指标的设置等等。</p>
 <h3 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chanshuyi/p/04_quick_start_of_promql.html">https://www.cnblogs.com/chanshuyi/p/04_quick_start_of_promql.html</a></p>
@@ -600,56 +625,65 @@
 <p>DeepSeek：<a target="_blank" rel="noopener" href="http://www.baidu.com/link?url=p7oVz_nFgPBGtD5ai7aZqXNQbMS2fVBB1ax5pMqHHs00PGHXkOmhgSXJNwRGFrEC">www.deepseek.com/</a></p>
 <p>通义千问：<a target="_blank" rel="noopener" href="https://tongyi.aliyun.com/">https://tongyi.aliyun.com/</a></p>
 <p>第一步：首先找到Prometheus采集到的指标信息</p>
-<p><img src="/images/image-20250218093055766.png" alt="image-20250218093055766"></p>
+<!-- 图片缺失：原路径 images/image-20250218093055766.png -->
+
 <p>第二步：复制对应的指标信息，如下获取系统相关指标</p>
-<p><img src="/images/image-20250218093157361.png" alt="image-20250218093157361"></p>
+<!-- 图片缺失：原路径 images/image-20250218093157361.png -->
+
 <p>第三步：把以上指标信息拷贝到大模型中，提出需求，结果以PromQL进行展示</p>
-<p><img src="/images/image-20250218093331958.png" alt="image-20250218093331958"></p>
+<!-- 图片缺失：原路径 images/image-20250218093331958.png -->
+
 <p>第四步：把生成的PromQL粘贴到Prometheus或者Grafana进行验证</p>
-<p><img src="/images/image-20250218093802682.png" alt="image-20250218093802682"></p>
+<!-- 图片缺失：原路径 images/image-20250218093802682.png -->
+
 <h3 id="Grafana-OneAlert告警"><a href="#Grafana-OneAlert告警" class="headerlink" title="Grafana+OneAlert告警**"></a>Grafana+OneAlert告警**</h3><h4 id="Grafana对接OneAlert"><a href="#Grafana对接OneAlert" class="headerlink" title="Grafana对接OneAlert"></a>Grafana对接OneAlert</h4><p>第一步：注册onealert平台<a target="_blank" rel="noopener" href="http://www.onealert.com/">http://www.onealert.com</a></p>
 <p>第二步：在onealert里添加grafana应用</p>
-<p><img src="/images/wps41.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps41.jpg --> 
+
 <p>设置通知策略（重要）</p>
-<p><img src="/images/wps42.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps42.jpg --> 
+
 <p>设置分发策略（重要）</p>
-<p><img src="/images/wps43.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps43.jpg --> 
+
 <p>绑定监控工具</p>
-<p><img src="/images/wps44.jpg" alt="img"> </p>
-<p><img src="/images/wps45.jpg" alt="img"> </p>
+<!-- 图片缺失：原路径 images/wps44.jpg --> 
+
+<!-- 图片缺失：原路径 images/wps45.jpg --> 
+
 <p>第三步：在grafana增加contact point</p>
 <p>URL填写名称，选择 contact points type为webhook,填写自己的url：<a target="_blank" rel="noopener" href="http://api.aiops.com/alert/api/event/grafana/v1/%E6%8D%A2%E6%88%90%E8%87%AA%E5%B7%B1%E7%9A%84appkey%E7%A7%98%E9%92%A5/">http://api.aiops.com/alert/api/event/grafana/v1/换成自己的appkey秘钥/</a></p>
-<img src="images/wps46.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps46.jpg --> 
 
-<img src="images/wps47.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps47.jpg --> 
 
 <p>添加notification policies</p>
-<img src="images/wps48.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps48.jpg --> 
 
 <p>第四步：设置告警</p>
-<img src="images/wps49.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps49.jpg --> 
 
 <h4 id="测试CPU负载报警"><a href="#测试CPU负载报警" class="headerlink" title="测试CPU负载报警"></a>测试CPU负载报警</h4><p>添加rule规则</p>
-<img src="images/wps50.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps50.jpg --> 
 
-<img src="images/wps51.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps51.jpg --> 
 
-<img src="images/wps52.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps52.jpg --> 
 
 <p>以上代表当Pending持续1m分钟（可以根据需求调整），则触发报警！</p>
-<img src="images/wps53.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps53.jpg --> 
 
 <p>配置完成后，在agent1节点进行压力测试</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /dev/urandom | gzip -9 &gt; /dev/null</span><br><span class="line">或</span><br><span class="line">stress-ng --cpu 4 --<span class="built_in">timeout</span> 4m</span><br></pre></td></tr></table></figure>
 
 <p>运行结果：</p>
-<img src="images/wps54.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps54.jpg --> 
 
 <p>等待1分钟</p>
-<img src="images/wps55.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps55.jpg --> 
 
 <p>邮件、电话、微信告警，如下图所示：</p>
-<img src="images/wps56.jpg" alt="img" style="zoom:200%;" /> 
+<!-- 图片缺失：原路径 images/wps56.jpg --> 
 
 <h4 id="总结报警不成功的可能原因"><a href="#总结报警不成功的可能原因" class="headerlink" title="总结报警不成功的可能原因"></a>总结报警不成功的可能原因</h4><p>各服务器之间时间不同步，这样时序数据会出问题，也会造成报警出问题</p>
 <p>必须写通知内容，留空内容是不会发报警的</p>
@@ -798,4 +832,4 @@
 <li><input checked="" disabled="" type="checkbox"> 系统层面（cpu、磁盘、内存、网络、io、负载等系统命令回顾回顾）</li>
 <li><input checked="" disabled="" type="checkbox"> 预习：Nginx软件</li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/LionelHuman">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/">http://example.com/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">John Doe</div><div class="author-info-description">一个正在学习 Swift 的开发者</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/LionelHuman"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">记录 Swift 学习与开发日常</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Prometheus"><span class="toc-number">1.</span> <span class="toc-text">Prometheus</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFPrometheus%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">什么是Prometheus？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">时间序列数据库？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">Prometheus主要特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-number">1.4.</span> <span class="toc-text">Prometheus架构图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.5.</span> <span class="toc-text">Prometheus环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.5.1.</span> <span class="toc-text">实验环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%8B%93%E6%89%91"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">实验拓扑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84%E8%A7%84%E5%88%99%E9%85%8D%E7%BD%AE%EF%BC%88%E9%98%BF%E9%87%8C%E4%BA%91%E6%8E%A7%E5%88%B6%E5%8F%B0%EF%BC%89"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">安全组规则配置（阿里云控制台）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Prometheus"><span class="toc-number">1.5.2.</span> <span class="toc-text">安装Prometheus</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Prometheus%E7%95%8C%E9%9D%A2"><span class="toc-number">1.5.3.</span> <span class="toc-text">Prometheus界面</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E8%BF%9C%E7%A8%8BLinux%E4%B8%BB%E6%9C%BA"><span class="toc-number">1.6.</span> <span class="toc-text">监控远程Linux主机**</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85node-exporter"><span class="toc-number">1.6.1.</span> <span class="toc-text">安装node_exporter</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8node-exporter%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.2.</span> <span class="toc-text">启动node_exporter服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%819100%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.6.3.</span> <span class="toc-text">验证9100端口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E8%A2%AB%E7%9B%91%E6%8E%A7%E7%AB%AF%E6%94%B6%E9%9B%86metrics"><span class="toc-number">1.6.4.</span> <span class="toc-text">在被监控端收集metrics</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9Prometheus%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.5.</span> <span class="toc-text">修改Prometheus配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%90%AFPrometheus%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.6.</span> <span class="toc-text">重启Prometheus服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%9B%91%E6%8E%A7%E7%BB%93%E6%9E%9C"><span class="toc-number">1.6.7.</span> <span class="toc-text">查看监控结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E8%BF%9C%E7%A8%8BMySQL%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.7.</span> <span class="toc-text">监控远程MySQL服务器**</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8agent1%E5%AE%89%E8%A3%85mariadb"><span class="toc-number">1.7.1.</span> <span class="toc-text">在agent1安装mariadb</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%B4%A6%E5%8F%B7%E5%B9%B6%E6%8E%88%E6%9D%83"><span class="toc-number">1.7.2.</span> <span class="toc-text">创建账号并授权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85mysqld-exporter%E7%BB%84%E4%BB%B6"><span class="toc-number">1.7.3.</span> <span class="toc-text">安装mysqld_exporter组件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BF%9E%E6%8E%A5mariadb%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.7.4.</span> <span class="toc-text">创建连接mariadb配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8mysqld-exporter"><span class="toc-number">1.7.5.</span> <span class="toc-text">启动mysqld_exporter</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9Prometheus%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-number">1.7.6.</span> <span class="toc-text">修改Prometheus配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%90%AF%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.7.7.</span> <span class="toc-text">重启服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%9B%91%E6%8E%A7%E7%BB%93%E6%9E%9C-1"><span class="toc-number">1.7.8.</span> <span class="toc-text">查看监控结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grafana%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">Grafana数据可视化**</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.1.</span> <span class="toc-text">Grafana介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana%E5%AE%89%E8%A3%85%E4%B8%8E%E7%99%BB%E5%BD%95"><span class="toc-number">2.2.</span> <span class="toc-text">Grafana安装与登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEprometheus%E4%B8%BAgrafana%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="toc-number">2.3.</span> <span class="toc-text">设置prometheus为grafana数据源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%91%E6%8E%A7CPU%E8%B4%9F%E8%BD%BD"><span class="toc-number">2.4.</span> <span class="toc-text">Grafana实现自定义监控CPU负载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5json%E6%A8%A1%E6%9D%BF%E5%AE%9E%E7%8E%B0linux%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql%E7%9B%91%E6%8E%A7"><span class="toc-number">2.5.</span> <span class="toc-text">导入json模板实现linux主机与mysql监控</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E5%BC%8F%E4%BD%9C%E4%B8%9A"><span class="toc-number">3.</span> <span class="toc-text">开放式作业</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PromQL%E8%AF%AD%E8%A8%80%E6%89%A9%E5%B1%95"><span class="toc-number">4.</span> <span class="toc-text">PromQL语言扩展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PromQL%E6%A6%82%E8%BF%B0"><span class="toc-number">4.1.</span> <span class="toc-text">PromQL概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">4.2.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8Kimi-DeepSeek-%E9%80%9A%E4%B9%89%E5%8D%83%E9%97%AE%E7%BC%96%E5%86%99PromQL"><span class="toc-number">4.3.</span> <span class="toc-text">利用Kimi&#x2F;DeepSeek&#x2F;通义千问编写PromQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana-OneAlert%E5%91%8A%E8%AD%A6"><span class="toc-number">4.4.</span> <span class="toc-text">Grafana+OneAlert告警**</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Grafana%E5%AF%B9%E6%8E%A5OneAlert"><span class="toc-number">4.4.1.</span> <span class="toc-text">Grafana对接OneAlert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95CPU%E8%B4%9F%E8%BD%BD%E6%8A%A5%E8%AD%A6"><span class="toc-number">4.4.2.</span> <span class="toc-text">测试CPU负载报警</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E6%8A%A5%E8%AD%A6%E4%B8%8D%E6%88%90%E5%8A%9F%E7%9A%84%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0"><span class="toc-number">4.4.3.</span> <span class="toc-text">总结报警不成功的可能原因</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-number">5.</span> <span class="toc-text">故障排查速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%A3%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-number">6.</span> <span class="toc-text">服务端口速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E5%BB%BA%E8%AE%AE%E6%B8%85%E5%8D%95"><span class="toc-number">7.</span> <span class="toc-text">最佳实践建议清单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8A%E6%97%A5%E9%87%8D%E7%82%B9"><span class="toc-number">8.</span> <span class="toc-text">今日重点</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/12/sex/" title="sex">sex</a><time datetime="2026-10-12T07:43:45.000Z" title="Created 2026-10-12 15:43:45">2026-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-IP%E5%8D%8F%E8%AE%AE/" title="TCP/IP协议">TCP/IP协议</a><time datetime="2026-10-07T07:23:57.000Z" title="Created 2026-10-07 15:23:57">2026-10-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/05/Swift/%E9%97%AD%E5%8C%85/" title="闭包">闭包</a><time datetime="2026-10-05T10:18:10.000Z" title="Created 2026-10-05 18:18:10">2026-10-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/05/%E5%87%BD%E6%95%B0/" title="函数">函数</a><time datetime="2026-10-05T07:33:51.000Z" title="Created 2026-10-05 15:33:51">2026-10-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/05/Swift/%E6%8E%A7%E5%88%B6%E6%B5%81/" title="控制流">控制流</a><time datetime="2026-10-05T06:50:43.000Z" title="Created 2026-10-05 14:50:43">2026-10-05</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/LionelHuman">LionelHuman</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://lionelhuman.github.io/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/">https://lionelhuman.github.io/2026/08/09/%E8%BF%90%E7%BB%B4/Prometheus%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://lionelhuman.github.io" target="_blank">LionelHuman 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Prometheus/">Prometheus</a><a class="post-meta__tags" href="/tags/%E7%9B%91%E6%8E%A7/">监控</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/22/%E8%BF%90%E7%BB%B4/Zabbix%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/" title="Zabbix监控系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-22</div><div class="info-item-2">Zabbix监控系统</div></div><div class="info-2"><div class="info-item-1">从零搭建 Zabbix 监控系统：一篇让新手也能轻松上手的完整教程 运维的终极安全感，来自一套靠谱的监控系统。本文将手把手带你部署 Zabbix，从单机到分布式，从监控项到报警，全程实战。   一、为什么我们离不开监控？运维工程师的日常，就像一位“服务器保姆”。CPU 飙高、内存溢出、磁盘写满、网络卡顿、服务宕机……这些问题不会挑时间出现，但我们必须第一时间发现并处理。靠人肉盯屏显然不现实，于是 自动化监控系统 就成了运维的“眼睛”和“耳朵”。 监控的核心目标：  实时收集服务器&#x2F;应用的各类指标数据； 图形化展示，让趋势一目了然； 触发报警，在问题恶化前通知负责人。  目前开源监控领域，Zabbix 和 Prometheus 是两大主流。Zabbix 历史悠久，在传统行业（银行、国企、制造业）根基深厚，功能全面，尤其适合物理机、虚拟机、网络设备等传统 IT 环境。而 Prometheus 更偏向云原生和容器。两者各有千秋，但学 Zabbix 依然是运维的必修课。  二、Zabbix 长什么样？先看一张架构图Zabbix 采用 Server–Agent–Proxy 三层架...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">LionelHuman</div><div class="author-info-description">一个正在学习 Swift 的开发者</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">36</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">54</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/LionelHuman"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/LionelHuman" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">记录 Swift 学习与开发日常</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Prometheus"><span class="toc-number">1.</span> <span class="toc-text">Prometheus</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFPrometheus%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">什么是Prometheus？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">时间序列数据库？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">Prometheus主要特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-number">1.4.</span> <span class="toc-text">Prometheus架构图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.5.</span> <span class="toc-text">Prometheus环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.5.1.</span> <span class="toc-text">实验环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%8B%93%E6%89%91"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">实验拓扑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84%E8%A7%84%E5%88%99%E9%85%8D%E7%BD%AE%EF%BC%88%E9%98%BF%E9%87%8C%E4%BA%91%E6%8E%A7%E5%88%B6%E5%8F%B0%EF%BC%89"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">安全组规则配置（阿里云控制台）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Prometheus"><span class="toc-number">1.5.2.</span> <span class="toc-text">安装Prometheus</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Prometheus%E7%95%8C%E9%9D%A2"><span class="toc-number">1.5.3.</span> <span class="toc-text">Prometheus界面</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E8%BF%9C%E7%A8%8BLinux%E4%B8%BB%E6%9C%BA"><span class="toc-number">1.6.</span> <span class="toc-text">监控远程Linux主机**</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85node-exporter"><span class="toc-number">1.6.1.</span> <span class="toc-text">安装node_exporter</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8node-exporter%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.2.</span> <span class="toc-text">启动node_exporter服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%819100%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.6.3.</span> <span class="toc-text">验证9100端口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E8%A2%AB%E7%9B%91%E6%8E%A7%E7%AB%AF%E6%94%B6%E9%9B%86metrics"><span class="toc-number">1.6.4.</span> <span class="toc-text">在被监控端收集metrics</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9Prometheus%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.5.</span> <span class="toc-text">修改Prometheus配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%90%AFPrometheus%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.6.6.</span> <span class="toc-text">重启Prometheus服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%9B%91%E6%8E%A7%E7%BB%93%E6%9E%9C"><span class="toc-number">1.6.7.</span> <span class="toc-text">查看监控结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E8%BF%9C%E7%A8%8BMySQL%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.7.</span> <span class="toc-text">监控远程MySQL服务器**</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8agent1%E5%AE%89%E8%A3%85mariadb"><span class="toc-number">1.7.1.</span> <span class="toc-text">在agent1安装mariadb</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%B4%A6%E5%8F%B7%E5%B9%B6%E6%8E%88%E6%9D%83"><span class="toc-number">1.7.2.</span> <span class="toc-text">创建账号并授权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85mysqld-exporter%E7%BB%84%E4%BB%B6"><span class="toc-number">1.7.3.</span> <span class="toc-text">安装mysqld_exporter组件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BF%9E%E6%8E%A5mariadb%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.7.4.</span> <span class="toc-text">创建连接mariadb配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8mysqld-exporter"><span class="toc-number">1.7.5.</span> <span class="toc-text">启动mysqld_exporter</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9Prometheus%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-number">1.7.6.</span> <span class="toc-text">修改Prometheus配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%90%AF%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.7.7.</span> <span class="toc-text">重启服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%9B%91%E6%8E%A7%E7%BB%93%E6%9E%9C-1"><span class="toc-number">1.7.8.</span> <span class="toc-text">查看监控结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grafana%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">Grafana数据可视化**</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.1.</span> <span class="toc-text">Grafana介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana%E5%AE%89%E8%A3%85%E4%B8%8E%E7%99%BB%E5%BD%95"><span class="toc-number">2.2.</span> <span class="toc-text">Grafana安装与登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEprometheus%E4%B8%BAgrafana%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="toc-number">2.3.</span> <span class="toc-text">设置prometheus为grafana数据源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%91%E6%8E%A7CPU%E8%B4%9F%E8%BD%BD"><span class="toc-number">2.4.</span> <span class="toc-text">Grafana实现自定义监控CPU负载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5json%E6%A8%A1%E6%9D%BF%E5%AE%9E%E7%8E%B0linux%E4%B8%BB%E6%9C%BA%E4%B8%8Emysql%E7%9B%91%E6%8E%A7"><span class="toc-number">2.5.</span> <span class="toc-text">导入json模板实现linux主机与mysql监控</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E5%BC%8F%E4%BD%9C%E4%B8%9A"><span class="toc-number">3.</span> <span class="toc-text">开放式作业</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PromQL%E8%AF%AD%E8%A8%80%E6%89%A9%E5%B1%95"><span class="toc-number">4.</span> <span class="toc-text">PromQL语言扩展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PromQL%E6%A6%82%E8%BF%B0"><span class="toc-number">4.1.</span> <span class="toc-text">PromQL概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">4.2.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8Kimi-DeepSeek-%E9%80%9A%E4%B9%89%E5%8D%83%E9%97%AE%E7%BC%96%E5%86%99PromQL"><span class="toc-number">4.3.</span> <span class="toc-text">利用Kimi&#x2F;DeepSeek&#x2F;通义千问编写PromQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grafana-OneAlert%E5%91%8A%E8%AD%A6"><span class="toc-number">4.4.</span> <span class="toc-text">Grafana+OneAlert告警**</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Grafana%E5%AF%B9%E6%8E%A5OneAlert"><span class="toc-number">4.4.1.</span> <span class="toc-text">Grafana对接OneAlert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95CPU%E8%B4%9F%E8%BD%BD%E6%8A%A5%E8%AD%A6"><span class="toc-number">4.4.2.</span> <span class="toc-text">测试CPU负载报警</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E6%8A%A5%E8%AD%A6%E4%B8%8D%E6%88%90%E5%8A%9F%E7%9A%84%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0"><span class="toc-number">4.4.3.</span> <span class="toc-text">总结报警不成功的可能原因</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-number">5.</span> <span class="toc-text">故障排查速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%A3%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-number">6.</span> <span class="toc-text">服务端口速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E5%BB%BA%E8%AE%AE%E6%B8%85%E5%8D%95"><span class="toc-number">7.</span> <span class="toc-text">最佳实践建议清单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8A%E6%97%A5%E9%87%8D%E7%82%B9"><span class="toc-number">8.</span> <span class="toc-text">今日重点</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/21/cs168-network-crash/" title="代码在本地跑得飞快，为什么一联网就崩溃？">代码在本地跑得飞快，为什么一联网就崩溃？</a><time datetime="2026-10-21T07:53:07.000Z" title="发表于 2026-10-21 15:53:07">2026-10-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-IP%E5%8D%8F%E8%AE%AE/" title="TCP/IP协议">TCP/IP协议</a><time datetime="2026-10-07T07:23:57.000Z" title="发表于 2026-10-07 15:23:57">2026-10-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/05/Swift/%E9%97%AD%E5%8C%85/" title="闭包">闭包</a><time datetime="2026-10-05T10:18:10.000Z" title="发表于 2026-10-05 18:18:10">2026-10-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/05/%E5%87%BD%E6%95%B0/" title="函数">函数</a><time datetime="2026-10-05T07:33:51.000Z" title="发表于 2026-10-05 15:33:51">2026-10-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/05/Swift/%E6%8E%A7%E5%88%B6%E6%B5%81/" title="控制流">控制流</a><time datetime="2026-10-05T06:50:43.000Z" title="发表于 2026-10-05 14:50:43">2026-10-05</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By LionelHuman</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
